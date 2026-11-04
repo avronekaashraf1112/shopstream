@@ -21,6 +21,7 @@ import CartManagementPage from "./pages/admin/CartManagementPage";
 import ProductInventoryPage from "./pages/admin/ProductInventoryPage";
 import UserDirectoryPage from "./pages/admin/UserDirectoryPage";
 import DashboardPage from "./pages/admin/DashboardPage";
+import AuthenticationPage from "./pages/admin/AuthenticationPage";
 
 function App() {
   return (
@@ -228,6 +229,16 @@ function App() {
             <ProtectedRoute allowedRoles={["admin", "moderator"]}>
               <AdminLayout>
                 <UserDirectoryPage defaultModal="delete" />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/authentication"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "moderator"]}>
+              <AdminLayout>
+                <AuthenticationPage />
               </AdminLayout>
             </ProtectedRoute>
           }
