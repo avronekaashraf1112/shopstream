@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import ProductCard from "../../components/customer/ProductCard";
 import NoResults from "../../components/customer/NoResults";
 import { fetchProducts, fetchCategories } from "../../services/products";
@@ -20,6 +21,29 @@ const SORT_OPTIONS = {
   "title-asc": { sortBy: "title", order: "asc" },
 };
 
+const MAX_PRICE = 1000; // The right end of the slider = "any price" (no price filter)
+
+// Turn a product from the API into the shape the ProductCard needs
+const formatProduct = (item) => ({
+  id: item.id,
+  title: item.title,
+  description: item.description,
+  image: item.thumbnail,
+  rating: item.rating,
+  price: `$${item.price.toFixed(2)}`,
+  numericPrice: item.price,
+  stock: item.stock,
+  category: item.category,
+  oldPrice: item.discountPercentage
+    ? `$${(item.price / (1 - item.discountPercentage / 100)).toFixed(2)}`
+    : null,
+  badge: item.discountPercentage
+    ? `-${Math.round(item.discountPercentage)} %`
+    : null,
+  badgeColor: "#ef4444",
+  badgePos: "right",
+});
+
 const AllProductsPage = () => {
   // Hook used to read the query parameter fom the URL
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,6 +62,12 @@ const AllProductsPage = () => {
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState("");
 
+  // Price filter: priceInput follows the slider, maxPrice is the applied value
+  const [priceInput, setPriceInput] = useState(MAX_PRICE);
+  const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
+  // Keeps the full product lists so moving the slider or changing pages does not refetch them
+  const allProductsCache = useRef({});
+
   useEffect(() => {
     let cancelled = false;
 
@@ -48,39 +78,50 @@ const AllProductsPage = () => {
 
         //Pagination and SortBy and Category
         const { sortBy, order } = SORT_OPTIONS[sort]; // Destructuring the object to variables
+        const priceFilterOn = maxPrice < MAX_PRICE;
 
-        const data = await fetchProducts({
-          search: searchTerm,
-          category,
-          sortBy,
-          order,
-          limit: LIMIT,
-          skip: (page - 1) * LIMIT,
-        });
+        if (priceFilterOn) {
+          // DummyJSON has no price filter, so we load all the matching products once
+          // (limit: 0 means "all"), then filter by price and split them into pages here
+          const cacheKey = `${searchTerm}|${category}|${sort}`;
+          let all = allProductsCache.current[cacheKey];
 
-        const formattedProducts = data.products.map((item) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          image: item.thumbnail,
-          rating: item.rating,
-          price: `$${item.price.toFixed(2)}`,
-          numericPrice: item.price,
-          stock: item.stock,
-          category: item.category,
-          oldPrice: item.discountPercentage
-            ? `$${(item.price / (1 - item.discountPercentage / 100)).toFixed(2)}`
-            : null,
-          badge: item.discountPercentage
-            ? `-${Math.round(item.discountPercentage)} %`
-            : null,
-          badgeColor: "#ef4444",
-          badgePos: "right",
-        }));
+          if (!all) {
+            const data = await fetchProducts({
+              search: searchTerm,
+              category,
+              sortBy,
+              order,
+              limit: 0,
+              skip: 0,
+            });
+            all = data.products;
+            allProductsCache.current[cacheKey] = all;
+          }
 
-        if (!cancelled) {
-          setProducts(formattedProducts);
-          setTotal(data.total);
+          const filtered = all.filter((item) => item.price <= maxPrice);
+          const start = (page - 1) * LIMIT;
+
+          if (!cancelled) {
+            setProducts(
+              filtered.slice(start, start + LIMIT).map(formatProduct),
+            );
+            setTotal(filtered.length);
+          }
+        } else {
+          const data = await fetchProducts({
+            search: searchTerm,
+            category,
+            sortBy,
+            order,
+            limit: LIMIT,
+            skip: (page - 1) * LIMIT,
+          });
+
+          if (!cancelled) {
+            setProducts(data.products.map(formatProduct));
+            setTotal(data.total);
+          }
         }
       } catch (error) {
         if (!cancelled) {
@@ -98,7 +139,7 @@ const AllProductsPage = () => {
     return () => {
       cancelled = true;
     };
-  }, [searchTerm, page, sort, category]);
+  }, [searchTerm, page, sort, category, maxPrice]);
 
   // To search in all pages even if you are in any page
   useEffect(() => {
@@ -123,7 +164,14 @@ const AllProductsPage = () => {
     loadCategories();
   }, []);
 
-  const [priceRange, setPriceRange] = useState(500);
+  // Wait a moment after the slider stops moving, then apply the price filter
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMaxPrice(priceInput);
+      setPage(1);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [priceInput]);
 
   const totalPages = Math.ceil(total / LIMIT); // Get the nearest no. to the pagination pages
 
@@ -152,6 +200,8 @@ const AllProductsPage = () => {
   const handleClearFilters = () => {
     setCategory("");
     setSort("default");
+    setPriceInput(MAX_PRICE);
+    setMaxPrice(MAX_PRICE);
     setPage(1);
     setSearchParams({});
   };
@@ -237,13 +287,20 @@ const AllProductsPage = () => {
               >
                 PRICE RANGE
               </h6>
+              <div
+                className="fw-semibold mb-1"
+                style={{ fontSize: "14px", color: "#334155" }}
+              >
+                {priceInput < MAX_PRICE ? `Up to $${priceInput}` : "Any price"}
+              </div>
               <input
                 type="range"
                 className="form-range"
                 min="0"
-                max="1000"
-                value={priceRange}
-                onChange={(e) => setPriceRange(e.target.value)}
+                max={MAX_PRICE}
+                step="10"
+                value={priceInput}
+                onChange={(e) => setPriceInput(Number(e.target.value))}
                 style={{ accentColor: "#4338ca" }}
               />
               <div
@@ -282,28 +339,6 @@ const AllProductsPage = () => {
               </div>
             </div>
 
-            <hr style={{ borderColor: "#e2e8f0", margin: "20px 0" }} />
-
-            {/* Brand Section */}
-            <div className="mb-4">
-              <h6
-                className="text-secondary fw-bold mb-3"
-                style={{ fontSize: "12px", letterSpacing: "0.8px" }}
-              >
-                BRAND
-              </h6>
-              <select
-                className="form-select form-select-custom w-100"
-                defaultValue="All Brands"
-                style={{ fontSize: "14px", borderRadius: "8px" }}
-              >
-                <option value="All Brands">All Brands</option>
-                <option value="Apple">Apple</option>
-                <option value="Sony">Sony</option>
-                <option value="Logitech">Logitech</option>
-              </select>
-            </div>
-
             {/* Clear Filters Button */}
             <button
               type="button"
@@ -328,17 +363,17 @@ const AllProductsPage = () => {
             <div>
               <h4
                 className="fw-bold mb-1"
-                style={{ color: "#0f172a", fontsize: "20px" }}
+                style={{ color: "#0f172a", fontSize: "20px" }}
               >
                 {searchTerm
                   ? `Search results for "${searchTerm}"`
                   : "All Products"}
               </h4>
 
-              <p className="tex-muted mb-0" style={{ fontsize: "14px" }}>
+              <p className="text-muted mb-0" style={{ fontSize: "14px" }}>
                 {loading
                   ? "Loading products ... "
-                  : `Showing ${products.length} products `}
+                  : `Showing ${products.length} of ${total} products`}
               </p>
             </div>
 
