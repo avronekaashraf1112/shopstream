@@ -165,3 +165,10 @@ body {
     transform: scale(1);
   }
 }
+
+/* Hide the active underline of the navbar links in the collapsed menu (small screens) */
+@media (max-width: 767.98px) {
+  .nav-link-custom.active::after {
+    display: none;
+  }
+}

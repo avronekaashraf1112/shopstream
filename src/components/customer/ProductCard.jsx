@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Card, Button } from "react-bootstrap";
 import { BsStarFill, BsCartPlus } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartSlice";
@@ -19,8 +20,8 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div
-      className="card h-100 border bg-white"
+    <Card
+      className="h-100 bg-white"
       style={{
         borderRadius: "16px",
         borderColor: "#e2e8f0",
@@ -69,7 +70,7 @@ const ProductCard = ({ product }) => {
         {/* Title and Rating row */}
         <div className="d-flex align-items-center justify-content-between mb-1">
           <Link
-            to="/product-details"
+            to={`/products/${product.id}`}
             className="mb-0 fw-bold text-truncate pe-2 text-decoration-none"
             style={{ fontSize: "15px", color: "#1e293b" }}
             title={product.title}
@@ -122,12 +123,14 @@ const ProductCard = ({ product }) => {
             )}
           </div>
 
-          <button
+          <Button
             type="button"
             onClick={handleAddToCart}
-            className="btn d-inline-flex align-items-center gap-1 px-3 py-1 text-white border-0"
+            className="d-inline-flex align-items-center gap-1 px-3 py-1 border-0"
             style={{
-              backgroundColor: "#4338ca",
+              "--bs-btn-bg": "#4338ca",
+              "--bs-btn-hover-bg": "#3730a3",
+              "--bs-btn-active-bg": "#3730a3",
               borderRadius: "8px",
               fontSize: "13px",
               fontWeight: 600,
@@ -135,10 +138,10 @@ const ProductCard = ({ product }) => {
           >
             <BsCartPlus style={{ fontSize: "15px" }} />
             <span>Add</span>
-          </button>
+          </Button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 
