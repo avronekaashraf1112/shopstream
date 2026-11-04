@@ -4,12 +4,7 @@ import toast from "react-hot-toast";
 import ProductCard from "../../components/customer/ProductCard";
 import NoResults from "../../components/customer/NoResults";
 import { fetchProducts, fetchCategories } from "../../services/products";
-import {
-  BsStarFill,
-  BsStar,
-  BsChevronLeft,
-  BsChevronRight,
-} from "react-icons/bs";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 const LIMIT = 9; // For Pagination limit
 
@@ -309,33 +304,6 @@ const AllProductsPage = () => {
               >
                 <span>$0</span>
                 <span>$1,000+</span>
-              </div>
-            </div>
-
-            <hr style={{ borderColor: "#e2e8f0", margin: "20px 0" }} />
-
-            {/* Rating Section */}
-            <div className="mb-4">
-              <h6
-                className="text-secondary fw-bold mb-3"
-                style={{ fontSize: "12px", letterSpacing: "0.8px" }}
-              >
-                RATING
-              </h6>
-              <div className="d-flex align-items-center gap-1">
-                {[1, 2, 3, 4].map((star) => (
-                  <BsStarFill
-                    key={star}
-                    style={{ color: "#10b981", fontSize: "14px" }}
-                  />
-                ))}
-                <BsStar style={{ color: "#cbd5e1", fontSize: "14px" }} />
-                <span
-                  className="ms-2 fw-medium"
-                  style={{ fontSize: "14px", color: "#1e293b" }}
-                >
-                  & Up
-                </span>
               </div>
             </div>
 
