@@ -1,6 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Pagination,
+  Spinner,
+  Alert,
+} from "react-bootstrap";
 import ProductCard from "../../components/customer/ProductCard";
 import NoResults from "../../components/customer/NoResults";
 import { fetchProducts, fetchCategories } from "../../services/products";
@@ -202,10 +212,10 @@ const AllProductsPage = () => {
   };
 
   return (
-    <div className="container-fluid px-lg-5 px-3 py-4">
-      <div className="row g-4">
+    <Container fluid className="px-lg-5 px-3 py-4">
+      <Row className="g-4">
         {/* Filter Sidebar */}
-        <div className="col-12 col-md-4 col-lg-3 col-xl-2">
+        <Col xs={12} md={4} lg={3} xl={2}>
           <aside className="pe-lg-3">
             {/* Category Section */}
             <div className="mb-4">
@@ -219,19 +229,20 @@ const AllProductsPage = () => {
                 className="d-flex flex-column gap-2"
                 style={{ maxHeight: "240px", overflowY: "auto" }}
               >
-                <div className="form-check d-flex align-items-center gap-2">
-                  <input
-                    className="form-check-input m-0"
+                <Form.Check
+                  id="cat-all"
+                  className="d-flex align-items-center gap-2"
+                >
+                  <Form.Check.Input
                     type="radio"
                     name="category"
-                    id="cat-all"
+                    className="m-0"
                     checked={category === ""}
                     onChange={() => handleCategoryChange("")}
                     style={{ cursor: "pointer", accentColor: "#4338ca" }}
                   />
-                  <label
-                    className="form-check-label user-select-none"
-                    htmlFor="cat-all"
+                  <Form.Check.Label
+                    className="user-select-none"
                     style={{
                       fontSize: "14px",
                       color: "#334155",
@@ -239,26 +250,25 @@ const AllProductsPage = () => {
                     }}
                   >
                     All
-                  </label>
-                </div>
+                  </Form.Check.Label>
+                </Form.Check>
 
                 {categories.map((cat) => (
-                  <div
+                  <Form.Check
                     key={cat.slug}
-                    className="form-check d-flex align-items-center gap-2"
+                    id={`cat-${cat.slug}`}
+                    className="d-flex align-items-center gap-2"
                   >
-                    <input
-                      className="form-check-input m-0"
-                      type="checkbox"
+                    <Form.Check.Input
+                      type="radio"
                       name="category"
-                      id={`cat-${cat.slug}`}
+                      className="m-0"
                       checked={category === cat.slug}
                       onChange={() => handleCategoryChange(cat.slug)}
                       style={{ cursor: "pointer", accentColor: "#4338ca" }}
                     />
-                    <label
-                      className="form-check-label user-select-none"
-                      htmlFor={`cat-${cat.slug}`}
+                    <Form.Check.Label
+                      className="user-select-none"
                       style={{
                         fontSize: "14px",
                         color: "#334155",
@@ -266,8 +276,8 @@ const AllProductsPage = () => {
                       }}
                     >
                       {cat.name}
-                    </label>
-                  </div>
+                    </Form.Check.Label>
+                  </Form.Check>
                 ))}
               </div>
             </div>
@@ -288,14 +298,13 @@ const AllProductsPage = () => {
               >
                 {priceInput < MAX_PRICE ? `Up to $${priceInput}` : "Any price"}
               </div>
-              <input
-                type="range"
-                className="form-range"
-                min="0"
+              <Form.Range
+                min={0}
                 max={MAX_PRICE}
-                step="10"
+                step={10}
                 value={priceInput}
                 onChange={(e) => setPriceInput(Number(e.target.value))}
+                aria-label="Maximum price"
                 style={{ accentColor: "#4338ca" }}
               />
               <div
@@ -308,24 +317,28 @@ const AllProductsPage = () => {
             </div>
 
             {/* Clear Filters Button */}
-            <button
+            <Button
               type="button"
               onClick={handleClearFilters}
-              className="btn w-100 py-2 border-0 fw-semibold"
+              className="w-100 py-2 border-0 fw-semibold"
               style={{
-                backgroundColor: "#e0e7ff",
-                color: "#4338ca",
+                "--bs-btn-bg": "#e0e7ff",
+                "--bs-btn-color": "#4338ca",
+                "--bs-btn-hover-bg": "#c7d2fe",
+                "--bs-btn-hover-color": "#4338ca",
+                "--bs-btn-active-bg": "#c7d2fe",
+                "--bs-btn-active-color": "#4338ca",
                 borderRadius: "8px",
                 fontSize: "14px",
               }}
             >
               Clear Filters
-            </button>
+            </Button>
           </aside>
-        </div>
+        </Col>
 
         {/* Main Content Area */}
-        <div className="col-12 col-md-8 col-lg-9 col-xl-10">
+        <Col xs={12} md={8} lg={9} xl={10}>
           {/* Header Row */}
           <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-4 gap-2">
             <div>
@@ -352,8 +365,9 @@ const AllProductsPage = () => {
               >
                 Sort by:
               </span>
-              <select
-                className="form-select form-select-custom"
+              <Form.Select
+                className="form-select-custom"
+                aria-label="Sort products"
                 value={sort}
                 onChange={(e) => {
                   setSort(e.target.value);
@@ -371,91 +385,73 @@ const AllProductsPage = () => {
                 <option value="price-desc">Price: High to Low</option>
                 <option value="rating-desc">Highest Rated</option>
                 <option value="title-asc">Name: A to Z</option>
-              </select>
+              </Form.Select>
             </div>
           </div>
 
           {/* Product Grid */}
-          <div className="row g-4">
+          <Row className="g-4">
             {loading ? (
-              <div className="col-12 text-center py-5">Loading products...</div>
+              <Col xs={12} className="text-center py-5">
+                <Spinner animation="border" variant="primary" />
+                <div className="text-muted mt-2">Loading products...</div>
+              </Col>
             ) : error ? (
-              <div className="col-12 text-center py-5 text-danger">{error}</div>
+              <Col xs={12}>
+                <Alert variant="danger" className="text-center">
+                  {error}
+                </Alert>
+              </Col>
             ) : products.length > 0 ? (
               products.map((product) => (
-                <div key={product.id} className="col-12 col-md-6 col-lg-4">
+                <Col key={product.id} xs={12} md={6} lg={4}>
                   <ProductCard product={product} />
-                </div>
+                </Col>
               ))
             ) : (
-              <div className="col-12">
+              <Col xs={12}>
                 <NoResults searchTerm={searchTerm} />
-              </div>
+              </Col>
             )}
-          </div>
+          </Row>
 
           {/* Pagination */}
           {!loading && totalPages > 1 && (
-            <div className="d-flex align-items-center justify-content-center gap-2 mt-5 mb-3">
-              {/* Pagination prev */}
-              <button
-                type="button"
+            <Pagination
+              className="justify-content-center gap-1 mt-5 mb-3"
+              style={{
+                "--bs-pagination-active-bg": "#4338ca",
+                "--bs-pagination-active-border-color": "#4338ca",
+              }}
+            >
+              <Pagination.Prev
                 disabled={page === 1}
                 onClick={() => setPage(page - 1)}
-                className="btn btn-outline-light border text-muted d-flex align-items-center justify-content-center"
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "8px",
-                  borderColor: "#e2e8f0",
-                  backgroundColor: "#ffffff",
-                }}
               >
                 <BsChevronLeft style={{ fontSize: "12px" }} />
-              </button>
+              </Pagination.Prev>
 
               {getPageNumbers().map((p) => (
-                <button
+                <Pagination.Item
                   key={p}
-                  type="button"
+                  active={p === page}
                   onClick={() => setPage(p)}
-                  className={`btn d-flex align-items-center justify-content-center ${
-                    p === page
-                      ? "text-white fw-bold"
-                      : "border-0 text-muted fw-medium"
-                  }`}
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    borderRadius: "8px",
-                    backgroundColor: p === page ? "#4338ca" : "transparent",
-                  }}
                 >
                   {p}
-                </button>
+                </Pagination.Item>
               ))}
 
-              {/* Pagination next */}
-              <button
-                type="button"
+              <Pagination.Next
                 disabled={page === totalPages}
                 onClick={() => setPage(page + 1)}
-                className="btn btn-outline-light border text-muted d-flex align-items-center justify-content-center"
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "8px",
-                  borderColor: "#e2e8f0",
-                  backgroundColor: "#ffffff",
-                }}
               >
                 <BsChevronRight style={{ fontSize: "12px" }} />
-              </button>
-            </div>
+              </Pagination.Next>
+            </Pagination>
           )}
-        </div>
-      </div>
-    </div>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

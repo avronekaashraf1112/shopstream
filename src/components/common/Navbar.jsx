@@ -18,19 +18,16 @@ const Navbar = () => {
   const [expanded, setExpanded] = useState(false); // Open/close the menu on small screens
 
   const token = useSelector((state) => state.auth.token);
-  const user = useSelector((state) => state.auth.user);
   const totalItems = useSelector((state) =>
     state.cart.items.reduce((sum, item) => sum + item.quantity, 0),
   );
 
   const isHome = location.pathname === "/" || location.pathname === "/home";
   const isProducts = location.pathname === "/products";
-  const isAdmin = user?.role === "admin" || user?.role === "moderator";
 
   const links = [
     { label: "Home", to: "/", active: isHome },
     { label: "Products", to: "/products", active: isProducts },
-    { label: "Categories", to: "/products", active: false },
   ];
 
   const handleSearch = (event) => {
@@ -137,18 +134,6 @@ const Navbar = () => {
                 {link.label}
               </Nav.Link>
             ))}
-
-            {/* Only admins and moderators can open the dashboard */}
-            {isAdmin && (
-              <Nav.Link
-                as={Link}
-                to="/admin/dashboard"
-                className="nav-link-custom"
-                style={{ color: "#475569", fontSize: "15px", fontWeight: 500 }}
-              >
-                Dashboard
-              </Nav.Link>
-            )}
           </Nav>
 
           <Form
