@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { logout } from "../../redux/authSlice";
 import { getAuthUser } from "../../services/auth";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
 
 const RECENT_ORDERS_DATA = [
   {
@@ -105,12 +106,12 @@ const UserProfilePage = () => {
 
   return (
     <div className="bg-white py-4 py-lg-5">
-      <div className="container-fluid px-lg-5 px-3">
-        <div className="row g-4">
+      <Container fluid className="px-lg-5 px-3">
+        <Row className="g-4">
           {/* Left Column: Account Navigation Sidebar */}
-          <div className="col-12 col-lg-3">
-            <div
-              className="card p-3 border bg-white shadow-sm"
+          <Col xs={12} lg={3}>
+            <Card
+              className="p-3 border bg-white shadow-sm"
               style={{ borderRadius: "16px", borderColor: "#e2e8f0" }}
             >
               <div className="p-2 mb-2">
@@ -131,9 +132,10 @@ const UserProfilePage = () => {
               <hr style={{ borderColor: "#f1f5f9", margin: "8px 0 16px 0" }} />
 
               <nav className="d-flex flex-column gap-2 mb-3">
-                <button
+                <Button
                   type="button"
-                  className="btn d-flex align-items-center gap-3 text-start w-100 py-2 px-3 border-0"
+                  variant={null}
+                  className="d-flex align-items-center gap-3 text-start w-100 py-2 px-3 border-0"
                   style={{
                     backgroundColor:
                       activeTab === "profile" ? "#4338ca" : "transparent",
@@ -146,11 +148,12 @@ const UserProfilePage = () => {
                 >
                   <BsPersonFill style={{ fontSize: "18px" }} />
                   <span>My Profile</span>
-                </button>
+                </Button>
 
-                <button
+                <Button
                   type="button"
-                  className="btn d-flex align-items-center gap-3 text-start w-100 py-2 px-3 border-0"
+                  variant={null}
+                  className="d-flex align-items-center gap-3 text-start w-100 py-2 px-3 border-0"
                   style={{
                     backgroundColor:
                       activeTab === "orders" ? "#4338ca" : "transparent",
@@ -163,11 +166,12 @@ const UserProfilePage = () => {
                 >
                   <BsClockHistory style={{ fontSize: "16px" }} />
                   <span>Order History</span>
-                </button>
+                </Button>
 
-                <button
+                <Button
                   type="button"
-                  className="btn d-flex align-items-center gap-3 text-start w-100 py-2 px-3 border-0"
+                  variant={null}
+                  className="d-flex align-items-center gap-3 text-start w-100 py-2 px-3 border-0"
                   style={{
                     backgroundColor:
                       activeTab === "settings" ? "#4338ca" : "transparent",
@@ -180,28 +184,29 @@ const UserProfilePage = () => {
                 >
                   <BsGear style={{ fontSize: "16px" }} />
                   <span>Account Settings</span>
-                </button>
+                </Button>
               </nav>
 
               <hr style={{ borderColor: "#f1f5f9", margin: "8px 0 16px 0" }} />
 
-              <button
+              <Button
                 type="button"
                 onClick={handleLogout}
-                className="btn d-flex align-items-center gap-3 text-start w-100 py-2 px-3 border-0"
+                variant={null}
+                className="d-flex align-items-center gap-3 text-start w-100 py-2 px-3 border-0"
                 style={{ color: "#ef4444", fontSize: "14px", fontWeight: 600 }}
               >
                 <BsBoxArrowRight style={{ fontSize: "18px" }} />
                 <span>Sign Out</span>
-              </button>
-            </div>
-          </div>
+              </Button>
+            </Card>
+          </Col>
 
           {/* Right Column: Profile Content */}
-          <div className="col-12 col-lg-9">
+          <Col xs={12} lg={9}>
             {/* Profile Header Card */}
-            <div
-              className="card p-4 border bg-white mb-4 shadow-sm"
+            <Card
+              className="p-4 border bg-white mb-4 shadow-sm"
               style={{ borderRadius: "20px", borderColor: "#e2e8f0" }}
             >
               <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-4">
@@ -218,9 +223,10 @@ const UserProfilePage = () => {
                         objectFit: "cover",
                       }}
                     />
-                    <button
+                    <Button
                       type="button"
-                      className="btn position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center text-white border-0 shadow-sm"
+                      variant={null}
+                      className="position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center text-white border-0 shadow-sm"
                       style={{
                         width: "28px",
                         height: "28px",
@@ -230,7 +236,7 @@ const UserProfilePage = () => {
                       title="Edit avatar"
                     >
                       <BsPencilFill />
-                    </button>
+                    </Button>
                   </div>
 
                   {/* User info */}
@@ -280,9 +286,10 @@ const UserProfilePage = () => {
                   className="d-flex flex-column gap-2"
                   style={{ minWidth: "160px" }}
                 >
-                  <button
+                  <Button
                     type="button"
-                    className="btn text-white fw-semibold border-0 py-2 shadow-sm"
+                    variant={null}
+                    className="text-white fw-semibold border-0 py-2 shadow-sm"
                     style={{
                       backgroundColor: "#3730a3",
                       borderRadius: "8px",
@@ -290,10 +297,11 @@ const UserProfilePage = () => {
                     }}
                   >
                     Edit Profile
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
-                    className="btn btn-outline-light border fw-semibold py-2"
+                    variant="outline-light"
+                    className="border fw-semibold py-2"
                     style={{
                       borderColor: "#cbd5e1",
                       color: "#4338ca",
@@ -303,17 +311,17 @@ const UserProfilePage = () => {
                     }}
                   >
                     View Analytics
-                  </button>
+                  </Button>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* 3 Metric Stat Cards */}
-            <div className="row g-3 mb-4">
+            <Row className="g-3 mb-4">
               {/* Total Orders */}
-              <div className="col-12 col-md-4">
-                <div
-                  className="card p-4 border bg-white h-100 shadow-sm"
+              <Col xs={12} md={4}>
+                <Card
+                  className="p-4 border bg-white h-100 shadow-sm"
                   style={{ borderRadius: "16px", borderColor: "#e2e8f0" }}
                 >
                   <div className="d-flex align-items-center justify-content-between mb-2">
@@ -348,13 +356,13 @@ const UserProfilePage = () => {
                   >
                     24
                   </div>
-                </div>
-              </div>
+                </Card>
+              </Col>
 
               {/* Wallet Balance */}
-              <div className="col-12 col-md-4">
-                <div
-                  className="card p-4 border bg-white h-100 shadow-sm"
+              <Col xs={12} md={4}>
+                <Card
+                  className="p-4 border bg-white h-100 shadow-sm"
                   style={{ borderRadius: "16px", borderColor: "#e2e8f0" }}
                 >
                   <div className="mb-2">
@@ -383,13 +391,13 @@ const UserProfilePage = () => {
                   >
                     $1,248.50
                   </div>
-                </div>
-              </div>
+                </Card>
+              </Col>
 
               {/* Loyalty Points */}
-              <div className="col-12 col-md-4">
-                <div
-                  className="card p-4 border bg-white h-100 shadow-sm"
+              <Col xs={12} md={4}>
+                <Card
+                  className="p-4 border bg-white h-100 shadow-sm"
                   style={{ borderRadius: "16px", borderColor: "#e2e8f0" }}
                 >
                   <div className="mb-2">
@@ -418,13 +426,13 @@ const UserProfilePage = () => {
                   >
                     4,800
                   </div>
-                </div>
-              </div>
-            </div>
+                </Card>
+              </Col>
+            </Row>
 
             {/* Recent Orders Card */}
-            <div
-              className="card p-4 border bg-white shadow-sm"
+            <Card
+              className="p-4 border bg-white shadow-sm"
               style={{ borderRadius: "20px", borderColor: "#e2e8f0" }}
             >
               <div className="d-flex align-items-center justify-content-between mb-4">
@@ -512,10 +520,10 @@ const UserProfilePage = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

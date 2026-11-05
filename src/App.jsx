@@ -54,14 +54,6 @@ function App() {
           }
         />
         <Route
-          path="/product-details"
-          element={
-            <CustomerLayout>
-              <ProductDetailsPage />
-            </CustomerLayout>
-          }
-        />
-        <Route
           path="/products/:id"
           element={
             <CustomerLayout>

@@ -14,6 +14,7 @@ import {
   BsBagCheck,
   BsCart2,
 } from "react-icons/bs";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
 
 const CartPage = () => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -31,7 +32,7 @@ const CartPage = () => {
   if (cartItems.length === 0) {
     return (
       <div className="bg-white">
-        <section className="container-fluid px-lg-5 px-3 py-5 text-center">
+        <Container as="section" fluid className="px-lg-5 px-3 py-5 text-center">
           <div className="mx-auto" style={{ maxWidth: "580px" }}>
             <div className="position-relative d-inline-block mb-4">
               <div
@@ -93,9 +94,11 @@ const CartPage = () => {
             </p>
 
             <div className="d-flex align-items-center justify-content-center gap-3">
-              <Link
+              <Button
                 to="/products"
-                className="btn text-white px-4 py-2 fw-semibold border-0"
+                as={Link}
+                variant={null}
+                className="text-white px-4 py-2 fw-semibold border-0"
                 style={{
                   backgroundColor: "#4338ca",
                   borderRadius: "8px",
@@ -103,10 +106,11 @@ const CartPage = () => {
                 }}
               >
                 Start Shopping
-              </Link>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="btn btn-outline-light border px-4 py-2 fw-semibold"
+                variant="outline-light"
+                className="border px-4 py-2 fw-semibold"
                 style={{
                   borderColor: "#cbd5e1",
                   backgroundColor: "#ffffff",
@@ -116,17 +120,17 @@ const CartPage = () => {
                 }}
               >
                 View Saved Items
-              </button>
+              </Button>
             </div>
           </div>
-        </section>
+        </Container>
       </div>
     );
   }
 
   return (
     <div className="bg-white py-4 py-lg-5">
-      <div className="container-fluid px-lg-5 px-3">
+      <Container fluid className="px-lg-5 px-3">
         {/* Title */}
         <div className="d-flex align-items-center justify-content-between mb-4">
           <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "28px" }}>
@@ -134,9 +138,10 @@ const CartPage = () => {
           </h2>
 
           {/* Clear cart button  */}
-          <button
+          <Button
             type="button"
-            className="btn btn-link p-0 text-decoration-none d-flex align-items-center gap-1 border-0"
+            variant="link"
+            className="p-0 text-decoration-none d-flex align-items-center gap-1 border-0"
             style={{ color: "#dc2626", fontSize: "14px", fontWeight: 600 }}
             onClick={() => {
               if (
@@ -150,17 +155,17 @@ const CartPage = () => {
           >
             <BsTrash style={{ fontSize: "15px" }} />
             <span>Clear Cart</span>
-          </button>
+          </Button>
         </div>
 
-        <div className="row g-4">
+        <Row className="g-4">
           {/* Left Column: Cart Items List */}
-          <div className="col-12 col-lg-8">
+          <Col xs={12} lg={8}>
             <div className="d-flex flex-column gap-3">
               {cartItems.map((item) => (
-                <div
+                <Card
                   key={item.id}
-                  className="card p-3 border bg-white shadow-sm"
+                  className="p-3 border bg-white shadow-sm"
                   style={{ borderRadius: "16px", borderColor: "#e2e8f0" }}
                 >
                   <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
@@ -194,9 +199,10 @@ const CartPage = () => {
                           className="d-inline-flex align-items-center border rounded-pill px-2 py-1"
                           style={{ borderColor: "#cbd5e1", height: "36px" }}
                         >
-                          <button
+                          <Button
                             type="button"
-                            className="btn btn-link text-muted p-0 border-0 px-2"
+                            variant="link"
+                            className="text-muted p-0 border-0 px-2"
                             onClick={() => dispatch(decreaseQty(item.id))}
                             style={{
                               textDecoration: "none",
@@ -205,16 +211,17 @@ const CartPage = () => {
                             }}
                           >
                             &minus;
-                          </button>
+                          </Button>
                           <span
                             className="px-2 fw-bold text-dark small"
                             style={{ fontSize: "14px" }}
                           >
                             {item.quantity}
                           </span>
-                          <button
+                          <Button
                             type="button"
-                            className="btn btn-link text-muted p-0 border-0 px-2"
+                            variant="link"
+                            className="text-muted p-0 border-0 px-2"
                             onClick={() => dispatch(increaseQty(item.id))}
                             style={{
                               textDecoration: "none",
@@ -223,7 +230,7 @@ const CartPage = () => {
                             }}
                           >
                             &#43;
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -237,9 +244,10 @@ const CartPage = () => {
                         ${(item.price * item.quantity).toFixed(2)}
                       </div>
 
-                      <button
+                      <Button
                         type="button"
-                        className="btn btn-link p-0 text-decoration-none d-flex align-items-center gap-1 border-0"
+                        variant="link"
+                        className="p-0 text-decoration-none d-flex align-items-center gap-1 border-0"
                         style={{
                           color: "#dc2626",
                           fontSize: "13px",
@@ -249,18 +257,18 @@ const CartPage = () => {
                       >
                         <BsTrash style={{ fontSize: "15px" }} />
                         <span>Remove</span>
-                      </button>
+                      </Button>
                     </div>
                   </div>
-                </div>
+                </Card>
               ))}
             </div>
-          </div>
+          </Col>
 
           {/* Right Column: Order Summary */}
-          <div className="col-12 col-lg-4">
-            <div
-              className="card p-4 border shadow-sm"
+          <Col xs={12} lg={4}>
+            <Card
+              className="p-4 border shadow-sm"
               style={{
                 borderRadius: "20px",
                 borderColor: "#e2e8f0",
@@ -310,9 +318,11 @@ const CartPage = () => {
                 </span>
               </div>
 
-              <Link
+              <Button
                 to="/checkout"
-                className="btn text-white w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2 border-0 mb-3 shadow-sm"
+                as={Link}
+                variant={null}
+                className="text-white w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2 border-0 mb-3 shadow-sm"
                 style={{
                   backgroundColor: "#4338ca",
                   borderRadius: "10px",
@@ -321,7 +331,7 @@ const CartPage = () => {
               >
                 <span>Proceed to Checkout</span>
                 <BsArrowRight style={{ fontSize: "18px" }} />
-              </Link>
+              </Button>
 
               <p
                 className="text-muted text-center small mb-4"
@@ -357,10 +367,10 @@ const CartPage = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

@@ -11,6 +11,7 @@ import {
 } from "react-icons/bs";
 import { fetchDashboardStats } from "../../services/dashboard";
 import { logout } from "../../redux/authSlice";
+import { Button, Card, Col, Row } from "react-bootstrap";
 
 const WIDGETS = [
   {
@@ -91,11 +92,11 @@ const DashboardPage = () => {
       </div>
 
       {/* Summary widgets */}
-      <div className="row g-4 mb-4">
+      <Row className="g-4 mb-4">
         {WIDGETS.map((w) => (
-          <div key={w.key} className="col-12 col-md-4">
-            <div
-              className="card p-4 border bg-white h-100"
+          <Col key={w.key} xs={12} md={4}>
+            <Card
+              className="p-4 border bg-white h-100"
               style={{ borderRadius: "16px", borderColor: "#e2e8f0" }}
             >
               <div
@@ -129,14 +130,14 @@ const DashboardPage = () => {
               >
                 {w.linkText} <BsArrowRight />
               </Link>
-            </div>
-          </div>
+            </Card>
+          </Col>
         ))}
-      </div>
+      </Row>
 
       {/* Authentication */}
-      <div
-        className="card p-4 border bg-white"
+      <Card
+        className="p-4 border bg-white"
         style={{ borderRadius: "16px", borderColor: "#e2e8f0" }}
       >
         <div
@@ -183,10 +184,11 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <button
+          <Button
             type="button"
             onClick={handleLogout}
-            className="btn d-inline-flex align-items-center justify-content-center gap-2 fw-semibold px-4 py-2"
+            variant={null}
+            className="d-inline-flex align-items-center justify-content-center gap-2 fw-semibold px-4 py-2"
             style={{
               border: "1px solid #fecaca",
               color: "#b91c1c",
@@ -197,9 +199,9 @@ const DashboardPage = () => {
           >
             <BsBoxArrowRight />
             <span>Logout</span>
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

@@ -15,6 +15,7 @@ import {
   BsGlobe,
 } from "react-icons/bs";
 import { IoShirtOutline } from "react-icons/io5";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
 
 const EmptyStatesPage = () => {
   const categories = [
@@ -29,7 +30,7 @@ const EmptyStatesPage = () => {
   return (
     <div className="bg-white">
       {/* 1. Empty Cart Section */}
-      <section className="container-fluid px-lg-5 px-3 py-5 text-center">
+      <Container as="section" fluid className="px-lg-5 px-3 py-5 text-center">
         <div className="mx-auto" style={{ maxWidth: "580px" }}>
           {/* Illustration Container */}
           <div className="position-relative d-inline-block mb-4">
@@ -95,9 +96,11 @@ const EmptyStatesPage = () => {
           </p>
 
           <div className="d-flex align-items-center justify-content-center gap-3">
-            <Link
+            <Button
               to="/products"
-              className="btn text-white px-4 py-2 fw-semibold border-0"
+              as={Link}
+              variant={null}
+              className="text-white px-4 py-2 fw-semibold border-0"
               style={{
                 backgroundColor: "#4338ca",
                 borderRadius: "8px",
@@ -105,23 +108,10 @@ const EmptyStatesPage = () => {
               }}
             >
               Start Shopping
-            </Link>
-            <button
-              type="button"
-              className="btn btn-outline-light border px-4 py-2 fw-semibold"
-              style={{
-                borderColor: "#cbd5e1",
-                backgroundColor: "#ffffff",
-                color: "#4338ca",
-                borderRadius: "8px",
-                fontSize: "14px",
-              }}
-            >
-              View Saved Items
-            </button>
+            </Button>
           </div>
         </div>
-      </section>
+      </Container>
 
       <hr
         className="my-5"
@@ -129,7 +119,7 @@ const EmptyStatesPage = () => {
       />
 
       {/* 2. Search No Results Section */}
-      <section className="container-fluid px-lg-5 px-3 py-4">
+      <Container as="section" fluid className="px-lg-5 px-3 py-4">
         <div className="text-center mb-5">
           <div
             className="d-inline-flex align-items-center justify-content-center rounded-3 p-3 mb-3"
@@ -147,22 +137,22 @@ const EmptyStatesPage = () => {
         </div>
 
         {/* Two cards */}
-        <div
-          className="row g-4 mb-5"
+        <Row
+          className="g-4 mb-5"
           style={{ maxWidth: "1000px", margin: "0 auto" }}
         >
           {/* Quick fix tips card */}
-          <div className="col-12 col-md-7">
-            <div
-              className="card p-4 border h-100 shadow-sm"
+          <Col xs={12} md={7}>
+            <Card
+              className="p-4 border h-100 shadow-sm"
               style={{
                 backgroundColor: "#f8fafc",
                 borderColor: "#e2e8f0",
                 borderRadius: "16px",
               }}
             >
-              <div className="row align-items-center g-3">
-                <div className="col-12 col-sm-7">
+              <Row className="align-items-center g-3">
+                <Col xs={12} sm={7}>
                   <h5
                     className="fw-bold mb-3"
                     style={{ color: "#4338ca", fontSize: "16px" }}
@@ -201,24 +191,24 @@ const EmptyStatesPage = () => {
                       <span>Use the filters to broaden your search.</span>
                     </div>
                   </div>
-                </div>
+                </Col>
 
-                <div className="col-12 col-sm-5 text-center">
+                <Col xs={12} sm={5} className="text-center">
                   <img
                     src={IMAGES.laptopDesk}
                     alt="Laptop Help"
                     className="rounded-3 shadow-sm w-100"
                     style={{ height: "110px", objectFit: "cover" }}
                   />
-                </div>
-              </div>
-            </div>
-          </div>
+                </Col>
+              </Row>
+            </Card>
+          </Col>
 
           {/* Chat with us card */}
-          <div className="col-12 col-md-5">
-            <div
-              className="card p-4 border h-100 shadow-sm"
+          <Col xs={12} md={5}>
+            <Card
+              className="p-4 border h-100 shadow-sm"
               style={{
                 backgroundColor: "#d1fae5",
                 borderColor: "#a7f3d0",
@@ -238,9 +228,10 @@ const EmptyStatesPage = () => {
                 Our shopping assistants are online and ready to help you find
                 the right item.
               </p>
-              <button
+              <Button
                 type="button"
-                className="btn text-white fw-bold d-inline-flex align-items-center justify-content-center gap-2 border-0 mt-auto py-2"
+                variant={null}
+                className="text-white fw-bold d-inline-flex align-items-center justify-content-center gap-2 border-0 mt-auto py-2"
                 style={{
                   backgroundColor: "#065f46",
                   borderRadius: "8px",
@@ -249,10 +240,10 @@ const EmptyStatesPage = () => {
               >
                 <BsChatSquareText />
                 <span>Start Live Chat</span>
-              </button>
-            </div>
-          </div>
-        </div>
+              </Button>
+            </Card>
+          </Col>
+        </Row>
 
         {/* BROWSE POPULAR CATEGORIES */}
         <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
@@ -262,12 +253,14 @@ const EmptyStatesPage = () => {
           >
             BROWSE POPULAR CATEGORIES
           </h6>
-          <div className="row g-2">
+          <Row className="g-2">
             {categories.map((c, i) => (
-              <div key={i} className="col-6 col-sm-4 col-md-2">
-                <Link
+              <Col key={i} xs={6} sm={4} md={2}>
+                <Button
                   to="/products"
-                  className="btn w-100 d-flex flex-column align-items-center justify-content-center py-3 border text-decoration-none"
+                  as={Link}
+                  variant={null}
+                  className="w-100 d-flex flex-column align-items-center justify-content-center py-3 border text-decoration-none"
                   style={{
                     backgroundColor: "#e0e7ff",
                     borderColor: "#c7d2fe",
@@ -281,12 +274,12 @@ const EmptyStatesPage = () => {
                   <span style={{ fontSize: "12px", fontWeight: 600 }}>
                     {c.name}
                   </span>
-                </Link>
-              </div>
+                </Button>
+              </Col>
             ))}
-          </div>
+          </Row>
         </div>
-      </section>
+      </Container>
 
       {/* Footer */}
       <footer
@@ -297,7 +290,7 @@ const EmptyStatesPage = () => {
           color: "#475569",
         }}
       >
-        <div className="container-fluid px-lg-5 px-3">
+        <Container fluid className="px-lg-5 px-3">
           <div className="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
             <div>
               <div className="fw-bold fs-5 mb-1" style={{ color: "#4338ca" }}>
@@ -346,7 +339,7 @@ const EmptyStatesPage = () => {
               </span>
             </div>
           </div>
-        </div>
+        </Container>
       </footer>
     </div>
   );

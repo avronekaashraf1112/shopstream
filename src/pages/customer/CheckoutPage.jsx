@@ -9,12 +9,13 @@ import {
   BsShieldCheck,
   BsArrowRepeat,
 } from "react-icons/bs";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 
 const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("card");
 
   return (
-    <div className="container-fluid px-lg-5 px-3 py-4">
+    <Container fluid className="px-lg-5 px-3 py-4">
       {/* Title & Subtitle */}
       <div className="mb-4">
         <h2
@@ -101,12 +102,12 @@ const CheckoutPage = () => {
       </div>
 
       {/* Main Grid: Forms on Left, Order Summary on Right */}
-      <div className="row g-4">
+      <Row className="g-4">
         {/* Left Column: Forms */}
-        <div className="col-12 col-lg-7">
+        <Col xs={12} lg={7}>
           {/* Shipping Information Card */}
-          <div
-            className="card p-4 mb-4 border bg-white"
+          <Card
+            className="p-4 mb-4 border bg-white"
             style={{
               borderRadius: "16px",
               borderColor: "#e2e8f0",
@@ -123,96 +124,96 @@ const CheckoutPage = () => {
               </h5>
             </div>
 
-            <div className="row g-3">
-              <div className="col-12 col-sm-6">
-                <label
-                  className="form-label text-dark fw-medium mb-1"
+            <Row className="g-3">
+              <Col xs={12} sm={6}>
+                <Form.Label
+                  className="text-dark fw-medium mb-1"
                   style={{ fontSize: "13px" }}
                 >
                   First Name
-                </label>
-                <input
+                </Form.Label>
+                <Form.Control
                   type="text"
-                  className="form-control form-control-custom"
+                  className="form-control-custom"
                   defaultValue="John"
                 />
-              </div>
+              </Col>
 
-              <div className="col-12 col-sm-6">
-                <label
-                  className="form-label text-dark fw-medium mb-1"
+              <Col xs={12} sm={6}>
+                <Form.Label
+                  className="text-dark fw-medium mb-1"
                   style={{ fontSize: "13px" }}
                 >
                   Last Name
-                </label>
-                <input
+                </Form.Label>
+                <Form.Control
                   type="text"
-                  className="form-control form-control-custom"
+                  className="form-control-custom"
                   defaultValue="Doe"
                 />
-              </div>
+              </Col>
 
-              <div className="col-12">
-                <label
-                  className="form-label text-dark fw-medium mb-1"
+              <Col xs={12}>
+                <Form.Label
+                  className="text-dark fw-medium mb-1"
                   style={{ fontSize: "13px" }}
                 >
                   Address
-                </label>
-                <input
+                </Form.Label>
+                <Form.Control
                   type="text"
-                  className="form-control form-control-custom"
+                  className="form-control-custom"
                   defaultValue="123 Commerce Way"
                 />
-              </div>
+              </Col>
 
-              <div className="col-12 col-sm-4">
-                <label
-                  className="form-label text-dark fw-medium mb-1"
+              <Col xs={12} sm={4}>
+                <Form.Label
+                  className="text-dark fw-medium mb-1"
                   style={{ fontSize: "13px" }}
                 >
                   City
-                </label>
-                <input
+                </Form.Label>
+                <Form.Control
                   type="text"
-                  className="form-control form-control-custom"
+                  className="form-control-custom"
                   defaultValue="New York"
                 />
-              </div>
+              </Col>
 
-              <div className="col-12 col-sm-4">
-                <label
-                  className="form-label text-dark fw-medium mb-1"
+              <Col xs={12} sm={4}>
+                <Form.Label
+                  className="text-dark fw-medium mb-1"
                   style={{ fontSize: "13px" }}
                 >
                   Zip Code
-                </label>
-                <input
+                </Form.Label>
+                <Form.Control
                   type="text"
-                  className="form-control form-control-custom"
+                  className="form-control-custom"
                   defaultValue="10001"
                 />
-              </div>
+              </Col>
 
-              <div className="col-12 col-sm-4">
-                <label
-                  className="form-label text-dark fw-medium mb-1"
+              <Col xs={12} sm={4}>
+                <Form.Label
+                  className="text-dark fw-medium mb-1"
                   style={{ fontSize: "13px" }}
                 >
                   Phone Number
-                </label>
-                <input
+                </Form.Label>
+                <Form.Control
                   type="text"
-                  className="form-control form-control-custom"
+                  className="form-control-custom"
                   defaultValue="+1 (555) 000-0000"
                 />
-              </div>
-            </div>
-          </div>
+              </Col>
+            </Row>
+          </Card>
 
           {/* Payment Method Card */}
-          <div
-            className="card p-4 mb-4 border bg-white"
+          <Card
+            className="p-4 mb-4 border bg-white"
             style={{
               borderRadius: "16px",
               borderColor: "#e2e8f0",
@@ -273,47 +274,47 @@ const CheckoutPage = () => {
               {paymentMethod === "card" && (
                 <div className="mt-3">
                   <div className="mb-3">
-                    <label
-                      className="form-label text-dark fw-medium mb-1"
+                    <Form.Label
+                      className="text-dark fw-medium mb-1"
                       style={{ fontSize: "13px" }}
                     >
                       Card Number
-                    </label>
-                    <input
+                    </Form.Label>
+                    <Form.Control
                       type="text"
-                      className="form-control form-control-custom"
+                      className="form-control-custom"
                       defaultValue="0000 0000 0000 0000"
                     />
                   </div>
 
-                  <div className="row g-3">
-                    <div className="col-6">
-                      <label
-                        className="form-label text-dark fw-medium mb-1"
+                  <Row className="g-3">
+                    <Col xs={6}>
+                      <Form.Label
+                        className="text-dark fw-medium mb-1"
                         style={{ fontSize: "13px" }}
                       >
                         Expiry Date
-                      </label>
-                      <input
+                      </Form.Label>
+                      <Form.Control
                         type="text"
-                        className="form-control form-control-custom"
+                        className="form-control-custom"
                         defaultValue="MM/YY"
                       />
-                    </div>
-                    <div className="col-6">
-                      <label
-                        className="form-label text-dark fw-medium mb-1"
+                    </Col>
+                    <Col xs={6}>
+                      <Form.Label
+                        className="text-dark fw-medium mb-1"
                         style={{ fontSize: "13px" }}
                       >
                         CVC
-                      </label>
-                      <input
+                      </Form.Label>
+                      <Form.Control
                         type="text"
-                        className="form-control form-control-custom"
+                        className="form-control-custom"
                         defaultValue="123"
                       />
-                    </div>
-                  </div>
+                    </Col>
+                  </Row>
                 </div>
               )}
             </div>
@@ -355,13 +356,14 @@ const CheckoutPage = () => {
                 <BsWallet2 style={{ fontSize: "18px", color: "#64748b" }} />
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Place Order Button */}
           <div className="d-flex justify-content-center justify-content-lg-end mb-4">
-            <button
+            <Button
               type="button"
-              className="btn text-white px-5 py-3 fw-bold d-inline-flex align-items-center gap-2 shadow-sm border-0"
+              variant={null}
+              className="text-white px-5 py-3 fw-bold d-inline-flex align-items-center gap-2 shadow-sm border-0"
               style={{
                 backgroundColor: "#4338ca",
                 borderRadius: "8px",
@@ -370,14 +372,14 @@ const CheckoutPage = () => {
             >
               <span>Place Order</span>
               <BsArrowRight style={{ fontSize: "18px" }} />
-            </button>
+            </Button>
           </div>
-        </div>
+        </Col>
 
         {/* Right Column: Order Summary */}
-        <div className="col-12 col-lg-5">
-          <div
-            className="card p-4 border"
+        <Col xs={12} lg={5}>
+          <Card
+            className="p-4 border"
             style={{
               borderRadius: "16px",
               borderColor: "#e2e8f0",
@@ -485,19 +487,20 @@ const CheckoutPage = () => {
 
             {/* Promo Code Input */}
             <div className="d-flex gap-2 mb-4">
-              <input
+              <Form.Control
                 type="text"
-                className="form-control form-control-custom bg-white"
+                className="form-control-custom bg-white"
                 placeholder="Promo Code"
                 style={{ borderRadius: "8px" }}
               />
-              <button
+              <Button
                 type="button"
-                className="btn btn-purple-outline px-4"
+                variant={null}
+                className="btn-purple-outline px-4"
                 style={{ borderRadius: "8px", fontSize: "14px" }}
               >
                 Apply
-              </button>
+              </Button>
             </div>
 
             {/* Security Guarantee Box */}
@@ -527,10 +530,10 @@ const CheckoutPage = () => {
                 </span>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

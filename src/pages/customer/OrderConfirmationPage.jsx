@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { IMAGES } from "../../assets/images";
 import { BsCheck, BsTruck, BsBoxSeam, BsQuestionCircle } from "react-icons/bs";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
 
 const OrderConfirmationPage = () => {
   return (
-    <div className="container-fluid px-lg-5 px-3 py-5">
+    <Container fluid className="px-lg-5 px-3 py-5">
       {/* Top Success Header */}
       <div className="text-center mb-5">
         <div
@@ -34,14 +35,14 @@ const OrderConfirmationPage = () => {
       </div>
 
       {/* Main Grid */}
-      <div
-        className="row g-4 mb-5"
+      <Row
+        className="g-4 mb-5"
         style={{ maxWidth: "1100px", margin: "0 auto" }}
       >
         {/* Left Column: Estimated Delivery & Shipment Tracker */}
-        <div className="col-12 col-lg-7">
-          <div
-            className="card p-4 border bg-white h-100 shadow-sm"
+        <Col xs={12} lg={7}>
+          <Card
+            className="p-4 border bg-white h-100 shadow-sm"
             style={{ borderRadius: "16px", borderColor: "#e2e8f0" }}
           >
             <div className="d-flex align-items-center justify-content-between mb-1">
@@ -159,8 +160,8 @@ const OrderConfirmationPage = () => {
             <hr style={{ borderColor: "#e2e8f0", margin: "20px 0" }} />
 
             {/* Shipping Info Details */}
-            <div className="row g-3">
-              <div className="col-12 col-sm-6">
+            <Row className="g-3">
+              <Col xs={12} sm={6}>
                 <div
                   className="text-secondary fw-bold mb-1"
                   style={{ fontSize: "11px", letterSpacing: "0.6px" }}
@@ -174,9 +175,9 @@ const OrderConfirmationPage = () => {
                   123 Indigo Way, Suite 404
                 </div>
                 <div className="text-muted small">San Francisco, CA 94103</div>
-              </div>
+              </Col>
 
-              <div className="col-12 col-sm-6">
+              <Col xs={12} sm={6}>
                 <div
                   className="text-secondary fw-bold mb-1"
                   style={{ fontSize: "11px", letterSpacing: "0.6px" }}
@@ -186,15 +187,15 @@ const OrderConfirmationPage = () => {
                 <div className="text-dark fw-medium small">
                   Express Delivery (2-3 Business Days)
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+              </Col>
+            </Row>
+          </Card>
+        </Col>
 
         {/* Right Column: Order Summary */}
-        <div className="col-12 col-lg-5">
-          <div
-            className="card p-4 border h-100 shadow-sm"
+        <Col xs={12} lg={5}>
+          <Card
+            className="p-4 border h-100 shadow-sm"
             style={{
               backgroundColor: "#f8fafc",
               borderColor: "#e2e8f0",
@@ -286,15 +287,17 @@ const OrderConfirmationPage = () => {
                 $374.76
               </span>
             </div>
-          </div>
-        </div>
-      </div>
+          </Card>
+        </Col>
+      </Row>
 
       {/* Buttons Row */}
       <div className="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-5">
-        <Link
+        <Button
           to="/products"
-          className="btn text-white px-4 py-2 fw-semibold border-0"
+          as={Link}
+          variant={null}
+          className="text-white px-4 py-2 fw-semibold border-0"
           style={{
             backgroundColor: "#4338ca",
             borderRadius: "8px",
@@ -302,10 +305,12 @@ const OrderConfirmationPage = () => {
           }}
         >
           Continue Shopping
-        </Link>
-        <Link
+        </Button>
+        <Button
           to="/products"
-          className="btn btn-outline-light border px-4 py-2 fw-semibold"
+          as={Link}
+          variant="outline-light"
+          className="border px-4 py-2 fw-semibold"
           style={{
             borderColor: "#6366f1",
             color: "#4338ca",
@@ -315,7 +320,7 @@ const OrderConfirmationPage = () => {
           }}
         >
           View Order History
-        </Link>
+        </Button>
       </div>
 
       {/* Support Alert Box */}
@@ -351,9 +356,10 @@ const OrderConfirmationPage = () => {
           </div>
         </div>
 
-        <button
+        <Button
           type="button"
-          className="btn text-white fw-bold px-4 py-2 border-0 flex-shrink-0"
+          variant={null}
+          className="text-white fw-bold px-4 py-2 border-0 flex-shrink-0"
           style={{
             backgroundColor: "#065f46",
             borderRadius: "20px",
@@ -361,9 +367,9 @@ const OrderConfirmationPage = () => {
           }}
         >
           Contact Support
-        </button>
+        </Button>
       </div>
-    </div>
+    </Container>
   );
 };
 
