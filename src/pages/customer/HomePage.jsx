@@ -3,6 +3,16 @@ import { IMAGES } from "../../assets/images";
 import { getProducts } from "../../services/products";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Spinner,
+} from "react-bootstrap";
 import { addToCart } from "../../redux/cartSlice";
 import {
   BsArrowRight,
@@ -14,35 +24,63 @@ import {
   BsSliders,
 } from "react-icons/bs";
 
+const VISIBLE_PRODUCTS = 4; // How many featured products are shown at once
+
+const SOCIAL_ICONS = [BsGlobe, BsChatDots, BsSliders];
+const SHOP_LINKS = [
+  "All Electronics",
+  "Wearables",
+  "Home Office",
+  "New Arrivals",
+];
+const SUPPORT_LINKS = ["Contact Us", "Shipping Info", "Returns", "FAQ"];
+
+const sectionTitleStyle = { fontSize: "24px", color: "#0f172a" };
+const footerHeadingStyle = { fontSize: "12px", letterSpacing: "0.8px" };
+
 const HomePage = () => {
   const dispatch = useDispatch(); // To send the action to the redux
 
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [start, setStart] = useState(0); // First visible product in the featured slider
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     const fetchProducts = async function () {
       try {
         const data = await getProducts();
         setProducts(data);
-      } catch (error) {
-        console.log("Error fetching products", error);
+      } catch {
+        toast.error("Failed to load featured products");
+      } finally {
+        setLoading(false);
       }
     };
     fetchProducts();
   }, []);
 
+  const maxStart = Math.max(products.length - VISIBLE_PRODUCTS, 0);
+  const visibleProducts = products.slice(start, start + VISIBLE_PRODUCTS); // To show only four products not all
+
+  const handleSubscribe = (event) => {
+    event.preventDefault();
+    toast.success("Thanks for subscribing!");
+    setEmail("");
+  };
+
   return (
     <div className="bg-white">
       {/* 1. Hero Section */}
-      <section className="container-fluid px-lg-5 px-3 py-4 py-lg-5">
-        <div
-          className="row align-items-center g-4 p-4 p-lg-5 rounded-4"
+      <Container as="section" fluid className="px-lg-5 px-3 py-4 py-lg-5">
+        <Row
+          className="align-items-center g-4 p-4 p-lg-5 rounded-4"
           style={{
             background: "linear-gradient(135deg, #f8faff 0%, #edf2fe 100%)",
             border: "1px solid #e2e8f0",
           }}
         >
-          <div className="col-12 col-lg-6">
+          <Col xs={12} lg={6}>
             <div className="mb-3">
               <span
                 className="badge text-white px-3 py-2 fw-bold"
@@ -79,34 +117,44 @@ const HomePage = () => {
             </p>
 
             <div className="d-flex flex-wrap align-items-center gap-3">
-              <Link
+              <Button
+                as={Link}
                 to="/products"
-                className="btn text-white px-4 py-2 fw-semibold border-0"
+                className="px-4 py-2 fw-semibold border-0"
                 style={{
-                  backgroundColor: "#4338ca",
+                  "--bs-btn-bg": "#4338ca",
+                  "--bs-btn-hover-bg": "#3730a3",
+                  "--bs-btn-active-bg": "#3730a3",
                   borderRadius: "8px",
                   fontSize: "14px",
                 }}
               >
                 Shop Now
-              </Link>
-              <Link
+              </Button>
+              <Button
+                as={Link}
                 to="/products"
-                className="btn btn-outline-light border px-4 py-2 fw-semibold"
+                variant="light"
+                className="px-4 py-2 fw-semibold"
                 style={{
-                  borderColor: "#cbd5e1",
-                  backgroundColor: "#ffffff",
-                  color: "#4338ca",
+                  "--bs-btn-bg": "#ffffff",
+                  "--bs-btn-color": "#4338ca",
+                  "--bs-btn-border-color": "#cbd5e1",
+                  "--bs-btn-hover-bg": "#f8fafc",
+                  "--bs-btn-hover-color": "#4338ca",
+                  "--bs-btn-hover-border-color": "#cbd5e1",
+                  "--bs-btn-active-bg": "#f1f5f9",
+                  "--bs-btn-active-color": "#4338ca",
                   borderRadius: "8px",
                   fontSize: "14px",
                 }}
               >
                 View Collections
-              </Link>
+              </Button>
             </div>
-          </div>
+          </Col>
 
-          <div className="col-12 col-lg-6 text-center">
+          <Col xs={12} lg={6} className="text-center">
             <div
               className="position-relative overflow-hidden rounded-4 shadow-sm"
               style={{
@@ -122,18 +170,15 @@ const HomePage = () => {
                 style={{ objectFit: "cover" }}
               />
             </div>
-          </div>
-        </div>
-      </section>
+          </Col>
+        </Row>
+      </Container>
 
       {/* 2. Top Categories Section */}
-      <section className="container-fluid px-lg-5 px-3 py-4">
+      <Container as="section" fluid className="px-lg-5 px-3 py-4">
         <div className="d-flex align-items-center justify-content-between mb-4">
           <div>
-            <h3
-              className="fw-bold mb-1"
-              style={{ fontSize: "24px", color: "#0f172a" }}
-            >
+            <h3 className="fw-bold mb-1" style={sectionTitleStyle}>
               Top Categories
             </h3>
             <p className="text-muted mb-0" style={{ fontSize: "14px" }}>
@@ -152,9 +197,9 @@ const HomePage = () => {
         </div>
 
         {/* Bento Grid */}
-        <div className="row g-3">
+        <Row className="g-3">
           {/* Large Left Card: Computing */}
-          <div className="col-12 col-lg-6">
+          <Col xs={12} lg={6}>
             <div
               className="position-relative rounded-4 overflow-hidden h-100 shadow-sm"
               style={{ minHeight: "360px", backgroundColor: "#0f172a" }}
@@ -180,101 +225,51 @@ const HomePage = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </Col>
 
           {/* Right Column: 3 Cards */}
-          <div className="col-12 col-lg-6">
-            <div className="row g-3">
-              {/* Wearables */}
-              <div className="col-12 col-sm-6">
-                <div
-                  className="position-relative rounded-4 overflow-hidden shadow-sm"
-                  style={{ height: "172px", backgroundColor: "#0f172a" }}
-                >
-                  <img
-                    src={IMAGES.wearableWatch}
-                    alt="Wearables"
-                    className="w-100 h-100 position-absolute top-0 start-0"
-                    style={{ objectFit: "cover" }}
-                  />
+          <Col xs={12} lg={6}>
+            <Row className="g-3">
+              {[
+                { name: "Wearables", image: IMAGES.wearableWatch, width: 6 },
+                { name: "Audio", image: IMAGES.audioSpeaker, width: 6 },
+                { name: "Home Theater", image: IMAGES.homeTheater, width: 12 },
+              ].map((category) => (
+                <Col key={category.name} xs={12} sm={category.width}>
                   <div
-                    className="position-absolute bottom-0 start-0 w-100 p-3 text-white"
-                    style={{
-                      background:
-                        "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%)",
-                    }}
+                    className="position-relative rounded-4 overflow-hidden shadow-sm"
+                    style={{ height: "172px", backgroundColor: "#0f172a" }}
                   >
-                    <span className="fw-bold" style={{ fontSize: "15px" }}>
-                      Wearables
-                    </span>
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="w-100 h-100 position-absolute top-0 start-0"
+                      style={{ objectFit: "cover" }}
+                    />
+                    <div
+                      className="position-absolute bottom-0 start-0 w-100 p-3 text-white"
+                      style={{
+                        background:
+                          "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%)",
+                      }}
+                    >
+                      <span className="fw-bold" style={{ fontSize: "15px" }}>
+                        {category.name}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Audio */}
-              <div className="col-12 col-sm-6">
-                <div
-                  className="position-relative rounded-4 overflow-hidden shadow-sm"
-                  style={{ height: "172px", backgroundColor: "#0f172a" }}
-                >
-                  <img
-                    src={IMAGES.audioSpeaker}
-                    alt="Audio"
-                    className="w-100 h-100 position-absolute top-0 start-0"
-                    style={{ objectFit: "cover" }}
-                  />
-                  <div
-                    className="position-absolute bottom-0 start-0 w-100 p-3 text-white"
-                    style={{
-                      background:
-                        "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%)",
-                    }}
-                  >
-                    <span className="fw-bold" style={{ fontSize: "15px" }}>
-                      Audio
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Home Theater */}
-              <div className="col-12">
-                <div
-                  className="position-relative rounded-4 overflow-hidden shadow-sm"
-                  style={{ height: "172px", backgroundColor: "#0f172a" }}
-                >
-                  <img
-                    src={IMAGES.homeTheater}
-                    alt="Home Theater"
-                    className="w-100 h-100 position-absolute top-0 start-0"
-                    style={{ objectFit: "cover" }}
-                  />
-                  <div
-                    className="position-absolute bottom-0 start-0 w-100 p-3 text-white"
-                    style={{
-                      background:
-                        "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%)",
-                    }}
-                  >
-                    <span className="fw-bold" style={{ fontSize: "15px" }}>
-                      Home Theater
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+                </Col>
+              ))}
+            </Row>
+          </Col>
+        </Row>
+      </Container>
 
       {/* 3. Featured Products Section */}
-      <section className="container-fluid px-lg-5 px-3 py-4">
+      <Container as="section" fluid className="px-lg-5 px-3 py-4">
         <div className="d-flex align-items-center justify-content-between mb-4">
           <div>
-            <h3
-              className="fw-bold mb-1"
-              style={{ fontSize: "24px", color: "#0f172a" }}
-            >
+            <h3 className="fw-bold mb-1" style={sectionTitleStyle}>
               Featured Products
             </h3>
             <p className="text-muted mb-0" style={{ fontSize: "14px" }}>
@@ -282,45 +277,56 @@ const HomePage = () => {
             </p>
           </div>
 
+          {/* Slider arrows: move the visible products one step */}
           <div className="d-flex align-items-center gap-2">
-            <button
-              type="button"
-              className="btn btn-outline-light border text-muted d-flex align-items-center justify-content-center"
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "50%",
-                backgroundColor: "#ffffff",
-              }}
-            >
-              <BsChevronLeft style={{ fontSize: "11px" }} />
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-light border text-muted d-flex align-items-center justify-content-center"
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "50%",
-                backgroundColor: "#ffffff",
-              }}
-            >
-              <BsChevronRight style={{ fontSize: "11px" }} />
-            </button>
+            {[
+              {
+                label: "Previous products",
+                icon: <BsChevronLeft style={{ fontSize: "11px" }} />,
+                disabled: start === 0,
+                onClick: () => setStart(start - 1),
+              },
+              {
+                label: "Next products",
+                icon: <BsChevronRight style={{ fontSize: "11px" }} />,
+                disabled: start >= maxStart,
+                onClick: () => setStart(start + 1),
+              },
+            ].map((arrow) => (
+              <Button
+                key={arrow.label}
+                type="button"
+                variant="light"
+                aria-label={arrow.label}
+                disabled={arrow.disabled}
+                onClick={arrow.onClick}
+                className="d-flex align-items-center justify-content-center p-0"
+                style={{
+                  "--bs-btn-bg": "#ffffff",
+                  "--bs-btn-color": "#6c757d",
+                  "--bs-btn-border-color": "#dee2e6",
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                }}
+              >
+                {arrow.icon}
+              </Button>
+            ))}
           </div>
         </div>
 
         {/* 4 Cards Grid */}
-
-        <div className="row g-4">
-          {products.slice(0, 4).map(
-            (
-              prod,
-              // To show only the four products not all
-            ) => (
-              <div key={prod.id} className="col-12 col-sm-6 col-lg-3">
-                <div
-                  className="card h-100 border bg-white p-3 shadow-sm"
+        {loading ? (
+          <div className="text-center py-5">
+            <Spinner animation="border" variant="primary" />
+          </div>
+        ) : (
+          <Row className="g-4">
+            {visibleProducts.map((prod) => (
+              <Col key={prod.id} xs={12} sm={6} lg={3}>
+                <Card
+                  className="h-100 bg-white p-3 shadow-sm"
                   style={{ borderRadius: "16px", borderColor: "#e2e8f0" }}
                 >
                   <div
@@ -338,28 +344,11 @@ const HomePage = () => {
                         style={{ objectFit: "cover" }}
                       />
                     </Link>
-
-                    {prod.badge && (
-                      <span
-                        className="position-absolute px-2 py-1 text-white fw-bold"
-                        style={{
-                          top: "10px",
-                          right: prod.badge === "NEW" ? "10px" : "auto",
-                          left: prod.badge === "BEST SELLER" ? "10px" : "auto",
-                          backgroundColor: prod.badgeColor,
-                          borderRadius: "6px",
-                          fontSize: "10px",
-                          letterSpacing: "0.5px",
-                        }}
-                      >
-                        {prod.badge}
-                      </span>
-                    )}
                   </div>
 
                   <div className="d-flex flex-column flex-grow-1">
                     <div
-                      className="fw-bold mb-1"
+                      className="fw-bold mb-1 text-uppercase"
                       style={{
                         color: "#4338ca",
                         fontSize: "11px",
@@ -386,38 +375,40 @@ const HomePage = () => {
                         className="fw-bold"
                         style={{ fontSize: "16px", color: "#0f172a" }}
                       >
-                        {prod.price}
+                        ${prod.price.toFixed(2)}
                       </span>
 
-                      <button
+                      <Button
                         type="button"
-                        onClick={() => {
-                          console.log("Add to Cart clicked:", prod);
-                          dispatch(addToCart(prod));
-                        }}
-                        className="btn d-flex align-items-center justify-content-center border"
+                        variant="light"
+                        aria-label={`Add ${prod.title} to cart`}
+                        onClick={() => dispatch(addToCart(prod))}
+                        className="d-flex align-items-center justify-content-center p-0"
                         style={{
+                          "--bs-btn-bg": "#f8fafc",
+                          "--bs-btn-color": "#4338ca",
+                          "--bs-btn-border-color": "#e2e8f0",
+                          "--bs-btn-hover-bg": "#e0e7ff",
+                          "--bs-btn-hover-color": "#4338ca",
+                          "--bs-btn-hover-border-color": "#c7d2fe",
                           width: "36px",
                           height: "36px",
                           borderRadius: "8px",
-                          backgroundColor: "#f8fafc",
-                          borderColor: "#e2e8f0",
-                          color: "#4338ca",
                         }}
                       >
                         <BsCartPlus style={{ fontSize: "16px" }} />
-                      </button>
+                      </Button>
                     </div>
                   </div>
-                </div>
-              </div>
-            ),
-          )}
-        </div>
-      </section>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )}
+      </Container>
 
       {/* 4. Newsletter Banner */}
-      <section className="container-fluid px-lg-5 px-3 py-4 py-lg-5">
+      <Container as="section" fluid className="px-lg-5 px-3 py-4 py-lg-5">
         <div
           className="p-4 p-lg-5 rounded-4 text-white position-relative overflow-hidden"
           style={{
@@ -460,36 +451,43 @@ const HomePage = () => {
               high-quality updates.
             </p>
 
-            <div
+            <Form
+              onSubmit={handleSubscribe}
               className="d-flex flex-column flex-sm-row gap-2"
               style={{ maxWidth: "480px" }}
             >
-              <input
+              <Form.Control
                 type="email"
+                required
                 placeholder="Enter your email"
-                className="form-control text-white border-0 px-3 py-2 flex-grow-1"
+                aria-label="Email address"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                className="text-white border-0 px-3 py-2 flex-grow-1"
                 style={{
                   backgroundColor: "rgba(255, 255, 255, 0.2)",
                   borderRadius: "8px",
                   fontSize: "14px",
                 }}
               />
-              <button
-                type="button"
-                className="btn text-white fw-bold px-4 py-2 border-0"
+              <Button
+                type="submit"
+                className="fw-bold px-4 py-2 border-0"
                 style={{
-                  backgroundColor: "#059669",
+                  "--bs-btn-bg": "#059669",
+                  "--bs-btn-hover-bg": "#047857",
+                  "--bs-btn-active-bg": "#047857",
                   borderRadius: "8px",
                   fontSize: "14px",
                   whiteSpace: "nowrap",
                 }}
               >
                 Join Now
-              </button>
-            </div>
+              </Button>
+            </Form>
           </div>
         </div>
-      </section>
+      </Container>
 
       {/* 5. Extended Customer Footer */}
       <footer
@@ -500,10 +498,10 @@ const HomePage = () => {
           color: "#475569",
         }}
       >
-        <div className="container-fluid px-lg-5 px-3">
-          <div className="row g-4 mb-5">
+        <Container fluid className="px-lg-5 px-3">
+          <Row className="g-4 mb-5">
             {/* Brand & mission */}
-            <div className="col-12 col-lg-5">
+            <Col xs={12} lg={5}>
               <h4 className="fw-bold mb-2" style={{ color: "#4338ca" }}>
                 ShopStream
               </h4>
@@ -515,122 +513,60 @@ const HomePage = () => {
                 world's most innovative electronics right to your doorstep.
               </p>
               <div className="d-flex align-items-center gap-2">
-                <span
-                  role="button"
-                  className="rounded-circle border d-flex align-items-center justify-content-center text-secondary"
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    backgroundColor: "#ffffff",
-                    borderColor: "#cbd5e1",
-                  }}
-                >
-                  <BsGlobe style={{ fontSize: "14px" }} />
-                </span>
-                <span
-                  role="button"
-                  className="rounded-circle border d-flex align-items-center justify-content-center text-secondary"
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    backgroundColor: "#ffffff",
-                    borderColor: "#cbd5e1",
-                  }}
-                >
-                  <BsChatDots style={{ fontSize: "14px" }} />
-                </span>
-                <span
-                  role="button"
-                  className="rounded-circle border d-flex align-items-center justify-content-center text-secondary"
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    backgroundColor: "#ffffff",
-                    borderColor: "#cbd5e1",
-                  }}
-                >
-                  <BsSliders style={{ fontSize: "14px" }} />
-                </span>
+                {SOCIAL_ICONS.map((Icon, index) => (
+                  <span
+                    key={index}
+                    role="button"
+                    className="rounded-circle border d-flex align-items-center justify-content-center text-secondary"
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      backgroundColor: "#ffffff",
+                      borderColor: "#cbd5e1",
+                    }}
+                  >
+                    <Icon style={{ fontSize: "14px" }} />
+                  </span>
+                ))}
               </div>
-            </div>
+            </Col>
 
             {/* Shop Links */}
-            <div className="col-6 col-sm-4 col-lg-2">
-              <h6
-                className="fw-bold text-dark mb-3"
-                style={{ fontSize: "12px", letterSpacing: "0.8px" }}
-              >
+            <Col xs={6} sm={4} lg={2}>
+              <h6 className="fw-bold text-dark mb-3" style={footerHeadingStyle}>
                 SHOP
               </h6>
               <ul className="list-unstyled d-flex flex-column gap-2 small mb-0">
-                <li>
-                  <Link
-                    to="/products"
-                    className="text-decoration-none text-muted"
-                  >
-                    All Electronics
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/products"
-                    className="text-decoration-none text-muted"
-                  >
-                    Wearables
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/products"
-                    className="text-decoration-none text-muted"
-                  >
-                    Home Office
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/products"
-                    className="text-decoration-none text-muted"
-                  >
-                    New Arrivals
-                  </Link>
-                </li>
+                {SHOP_LINKS.map((label) => (
+                  <li key={label}>
+                    <Link
+                      to="/products"
+                      className="text-decoration-none text-muted"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
-            </div>
+            </Col>
 
             {/* Support Links */}
-            <div className="col-6 col-sm-4 col-lg-2">
-              <h6
-                className="fw-bold text-dark mb-3"
-                style={{ fontSize: "12px", letterSpacing: "0.8px" }}
-              >
+            <Col xs={6} sm={4} lg={2}>
+              <h6 className="fw-bold text-dark mb-3" style={footerHeadingStyle}>
                 SUPPORT
               </h6>
               <ul className="list-unstyled d-flex flex-column gap-2 small mb-0">
-                <li>
-                  <span className="text-muted" style={{ cursor: "pointer" }}>
-                    Contact Us
-                  </span>
-                </li>
-                <li>
-                  <span className="text-muted" style={{ cursor: "pointer" }}>
-                    Shipping Info
-                  </span>
-                </li>
-                <li>
-                  <span className="text-muted" style={{ cursor: "pointer" }}>
-                    Returns
-                  </span>
-                </li>
-                <li>
-                  <span className="text-muted" style={{ cursor: "pointer" }}>
-                    FAQ
-                  </span>
-                </li>
+                {SUPPORT_LINKS.map((label) => (
+                  <li key={label}>
+                    <span className="text-muted" style={{ cursor: "pointer" }}>
+                      {label}
+                    </span>
+                  </li>
+                ))}
               </ul>
-            </div>
-          </div>
-        </div>
+            </Col>
+          </Row>
+        </Container>
       </footer>
     </div>
   );

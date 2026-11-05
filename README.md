@@ -3,7 +3,7 @@
 A responsive e-commerce frontend built with React, consuming the [DummyJSON](https://dummyjson.com) API. It includes a customer storefront and an admin dashboard with full CRUD for products, users and carts.
 
 **Live demo:** _add your Vercel link here_
-**Repository:** _add your GitHub link here_
+**Repository:** (https://github.com/avronekaashraf1112/shopstream)
 
 ## Features
 
@@ -65,6 +65,8 @@ DummyJSON provides test users. For example, this account has the admin role and 
 - Password: `emilyspass`
 
 More users: https://dummyjson.com/users
+
+After logging in with the admin account, open the dashboard at `/admin/dashboard` (the storefront navbar follows the Figma design and has no dashboard link).
 
 ## Deployment
 

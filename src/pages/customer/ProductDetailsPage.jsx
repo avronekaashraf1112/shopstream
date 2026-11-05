@@ -1,9 +1,20 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { fetchProductById } from "../../redux/productSlice";
 import { IMAGES } from "../../assets/images";
 import { addToCart } from "../../redux/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Breadcrumb,
+  Nav,
+  Spinner,
+  Alert,
+} from "react-bootstrap";
 import {
   BsStarFill,
   BsHeart,
@@ -16,10 +27,53 @@ import {
   BsArrowRight,
 } from "react-icons/bs";
 
+const TABS = [
+  { key: "specifications", label: "specifications" },
+  { key: "user reviews", label: "user reviews" },
+  { key: "q&a", label: "Q&A" },
+  { key: "downloads", label: "downloads" },
+];
+
+const COLORS = [
+  { name: "Midnight Indigo", value: "#4338ca" },
+  { name: "Dark Charcoal", value: "#334155" },
+  { name: "Silver", value: "#f8fafc" },
+];
+
+const VALUE_PROPS = [
+  { icon: BsShieldCheck, label: "2 Year Warranty" },
+  { icon: BsTruck, label: "Fast 2-Day Delivery" },
+  { icon: BsArrowRepeat, label: "30-Day Returns" },
+  { icon: BsHeadset, label: "Lifetime Support" },
+];
+
+const AUDIO_SPECS = [
+  ["Driver Diameter", "50mm Neodymium"],
+  ["Freq. Response", "5Hz - 40kHz"],
+  ["Impedance", "32 Ohms"],
+  ["Sensitivity", "102 dB/mW"],
+];
+
+const PHYSICAL_SPECS = [
+  ["Weight", "285g (9.8 oz)"],
+  ["Cable Type", "Detachable Coiled"],
+  ["Earcup Material", "Memory Foam"],
+  ["Folding", "Flat-fold design"],
+];
+
+const BOX_ITEMS = ["Hard Case", "3.5mm Cable", "6.3mm Adapter", "Extra Pads"];
+
+const specCardStyle = {
+  borderRadius: "16px",
+  borderColor: "#e2e8f0",
+  backgroundColor: "#f8fafc",
+};
+
 const ProductDetailsPage = () => {
   // Find the product by id from the API using useParams
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     selectedProduct: product,
     loading,
@@ -43,14 +97,21 @@ const ProductDetailsPage = () => {
   }, [product]);
 
   if (loading) {
-    return <div className="text-center py-5">Loading product...</div>;
+    return (
+      <div className="text-center py-5">
+        <Spinner animation="border" variant="primary" />
+        <div className="text-muted mt-2">Loading product...</div>
+      </div>
+    );
   }
 
   if (error || !product) {
     return (
-      <div className="text-center py-5 text-danger">
-        {error || "Product not found!"}
-      </div>
+      <Container className="py-5">
+        <Alert variant="danger" className="text-center mb-0">
+          {error || "Product not found!"}
+        </Alert>
+      </Container>
     );
   }
 
@@ -68,6 +129,12 @@ const ProductDetailsPage = () => {
         quantity: quantity,
       }),
     );
+  };
+
+  // Add the product to the cart, then go to the cart page
+  const handleBuyNow = () => {
+    handleAddToCart();
+    navigate("/cart");
   };
 
   const crossSellProducts = [
@@ -103,39 +170,43 @@ const ProductDetailsPage = () => {
 
   return (
     <div className="bg-white">
-      <div className="container-fluid px-lg-5 px-3 py-4">
+      <Container fluid className="px-lg-5 px-3 py-4">
         {/* Breadcrumbs */}
-        <nav className="mb-4" style={{ fontSize: "13px" }}>
-          <ol className="breadcrumb mb-0">
-            <li className="breadcrumb-item">
-              <Link to="/" className="text-decoration-none text-muted">
-                Home
-              </Link>
-            </li>
-            <li className="breadcrumb-item">
-              <Link
-                to="/products"
-                className="text-decoration-none text-muted text-capitalize"
-              >
-                {product.category}
-              </Link>
-            </li>
-            <li
-              className="breadcrumb-item active text-dark fw-semibold"
-              aria-current="page"
-            >
-              {product.title}
-            </li>
-          </ol>
-        </nav>
+        <Breadcrumb
+          className="mb-4"
+          listProps={{ className: "mb-0" }}
+          style={{ fontSize: "13px" }}
+        >
+          <Breadcrumb.Item
+            linkAs={Link}
+            linkProps={{
+              to: "/",
+              className: "text-decoration-none text-muted",
+            }}
+          >
+            Home
+          </Breadcrumb.Item>
+          <Breadcrumb.Item
+            linkAs={Link}
+            linkProps={{
+              to: "/products",
+              className: "text-decoration-none text-muted text-capitalize",
+            }}
+          >
+            {product.category}
+          </Breadcrumb.Item>
+          <Breadcrumb.Item active className="text-dark fw-semibold">
+            {product.title}
+          </Breadcrumb.Item>
+        </Breadcrumb>
 
         {/* Top Product Section */}
-        <div className="row g-4 g-lg-5 mb-5">
+        <Row className="g-4 g-lg-5 mb-5">
           {/* Left Column: Gallery */}
-          <div className="col-12 col-lg-7">
-            <div className="row g-3">
+          <Col xs={12} lg={7}>
+            <Row className="g-3">
               {/* Thumbnails */}
-              <div className="col-2 d-flex flex-column gap-2">
+              <Col xs={2} className="d-flex flex-column gap-2">
                 {thumbnails.map((thumb, idx) => (
                   <div
                     key={idx}
@@ -159,10 +230,10 @@ const ProductDetailsPage = () => {
                     />
                   </div>
                 ))}
-              </div>
+              </Col>
 
               {/* Main Image */}
-              <div className="col-10">
+              <Col xs={10}>
                 <div
                   className="position-relative rounded-4 overflow-hidden shadow-sm"
                   style={{
@@ -179,26 +250,28 @@ const ProductDetailsPage = () => {
                   />
 
                   {/* Wishlist Button */}
-                  <button
+                  <Button
                     type="button"
-                    className="btn btn-white position-absolute top-0 end-0 m-3 rounded-circle d-flex align-items-center justify-content-center shadow-sm p-0"
+                    variant="light"
+                    aria-label="Add to wishlist"
+                    className="position-absolute top-0 end-0 m-3 rounded-circle d-flex align-items-center justify-content-center shadow-sm p-0"
                     style={{
+                      "--bs-btn-bg": "#ffffff",
+                      "--bs-btn-color": "#64748b",
+                      "--bs-btn-border-color": "#e2e8f0",
                       width: "40px",
                       height: "40px",
-                      backgroundColor: "#ffffff",
-                      border: "1px solid #e2e8f0",
-                      color: "#64748b",
                     }}
                   >
                     <BsHeart style={{ fontSize: "18px" }} />
-                  </button>
+                  </Button>
                 </div>
-              </div>
-            </div>
-          </div>
+              </Col>
+            </Row>
+          </Col>
 
           {/* Right Column: Product Info & Actions */}
-          <div className="col-12 col-lg-5">
+          <Col xs={12} lg={5}>
             <div className="d-flex align-items-center gap-2 mb-2">
               <span
                 className="badge text-white px-2 py-1 fw-bold"
@@ -221,10 +294,7 @@ const ProductDetailsPage = () => {
 
             {/* Rating */}
             <div className="d-flex align-items-center gap-2 mb-3">
-              <div
-                className="d-flex align-items-center text-success"
-                style={{ color: "#10b981" }}
-              >
+              <div className="d-flex align-items-center">
                 {[1, 2, 3, 4, 5].map((s) => (
                   <BsStarFill
                     key={s}
@@ -292,51 +362,27 @@ const ProductDetailsPage = () => {
                 <span className="fw-normal text-muted">{selectedColor}</span>
               </div>
               <div className="d-flex align-items-center gap-2">
-                <span
-                  role="button"
-                  className="rounded-circle d-inline-block"
-                  style={{
-                    width: "26px",
-                    height: "26px",
-                    backgroundColor: "#4338ca",
-                    boxShadow:
-                      selectedColor === "Midnight Indigo"
-                        ? "0 0 0 2px #fff, 0 0 0 4px #4338ca"
-                        : "none",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setSelectedColor("Midnight Indigo")}
-                />
-                <span
-                  role="button"
-                  className="rounded-circle d-inline-block"
-                  style={{
-                    width: "26px",
-                    height: "26px",
-                    backgroundColor: "#334155",
-                    boxShadow:
-                      selectedColor === "Dark Charcoal"
-                        ? "0 0 0 2px #fff, 0 0 0 4px #4338ca"
-                        : "none",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setSelectedColor("Dark Charcoal")}
-                />
-                <span
-                  role="button"
-                  className="rounded-circle d-inline-block border"
-                  style={{
-                    width: "26px",
-                    height: "26px",
-                    backgroundColor: "#f8fafc",
-                    boxShadow:
-                      selectedColor === "Silver"
-                        ? "0 0 0 2px #fff, 0 0 0 4px #4338ca"
-                        : "none",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setSelectedColor("Silver")}
-                />
+                {COLORS.map((color) => (
+                  <span
+                    key={color.name}
+                    role="button"
+                    title={color.name}
+                    className={`rounded-circle d-inline-block ${
+                      color.name === "Silver" ? "border" : ""
+                    }`}
+                    style={{
+                      width: "26px",
+                      height: "26px",
+                      backgroundColor: color.value,
+                      boxShadow:
+                        selectedColor === color.name
+                          ? "0 0 0 2px #fff, 0 0 0 4px #4338ca"
+                          : "none",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => setSelectedColor(color.name)}
+                  />
+                ))}
               </div>
             </div>
 
@@ -346,38 +392,44 @@ const ProductDetailsPage = () => {
                 className="d-flex align-items-center border rounded-3 px-2 py-1"
                 style={{ borderColor: "#cbd5e1", height: "44px" }}
               >
-                <button
+                <Button
                   type="button"
-                  className="btn btn-link text-muted p-0 border-0"
+                  variant="link"
+                  aria-label="Decrease quantity"
+                  className="text-muted p-0 border-0"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   style={{ textDecoration: "none", fontSize: "16px" }}
                 >
                   -
-                </button>
+                </Button>
                 <span
                   className="px-3 fw-bold text-dark"
                   style={{ fontSize: "14px" }}
                 >
                   {quantity}
                 </span>
-                <button
+                <Button
                   type="button"
-                  className="btn btn-link text-muted p-0 border-0"
+                  variant="link"
+                  aria-label="Increase quantity"
+                  className="text-muted p-0 border-0"
                   onClick={
                     () => setQuantity(Math.min(product.stock, quantity + 1)) // Math.min => to ensure that quantity does not exceed stock ..
                   }
                   style={{ textDecoration: "none", fontSize: "16px" }}
                 >
                   +
-                </button>
+                </Button>
               </div>
 
-              <button
+              <Button
                 type="button"
                 onClick={handleAddToCart}
-                className="btn text-white fw-bold d-flex align-items-center justify-content-center gap-2 flex-grow-1 border-0"
+                className="fw-bold d-flex align-items-center justify-content-center gap-2 flex-grow-1 border-0"
                 style={{
-                  backgroundColor: "#4338ca",
+                  "--bs-btn-bg": "#4338ca",
+                  "--bs-btn-hover-bg": "#3730a3",
+                  "--bs-btn-active-bg": "#3730a3",
                   borderRadius: "8px",
                   height: "44px",
                   fontSize: "14px",
@@ -385,162 +437,100 @@ const ProductDetailsPage = () => {
               >
                 <BsBagPlus style={{ fontSize: "16px" }} />
                 <span>Add to Cart</span>
-              </button>
+              </Button>
             </div>
 
             {/* Buy Now Button */}
-            <button
+            <Button
               type="button"
-              className="btn text-white fw-bold w-100 mb-4 border-0"
+              onClick={handleBuyNow}
+              className="fw-bold w-100 mb-4 border-0"
               style={{
-                backgroundColor: "#059669",
+                "--bs-btn-bg": "#059669",
+                "--bs-btn-hover-bg": "#047857",
+                "--bs-btn-active-bg": "#047857",
                 borderRadius: "8px",
                 height: "44px",
                 fontSize: "14px",
               }}
             >
               Buy Now
-            </button>
+            </Button>
 
             {/* 4 Value Props Grid */}
-            <div
-              className="row g-2 pt-2 text-secondary"
+            <Row
+              className="g-2 pt-2 text-secondary"
               style={{ fontSize: "12px" }}
             >
-              <div className="col-6 d-flex align-items-center gap-2">
-                <BsShieldCheck style={{ color: "#059669", fontSize: "15px" }} />
-                <span>2 Year Warranty</span>
-              </div>
-              <div className="col-6 d-flex align-items-center gap-2">
-                <BsTruck style={{ color: "#059669", fontSize: "15px" }} />
-                <span>Fast 2-Day Delivery</span>
-              </div>
-              <div className="col-6 d-flex align-items-center gap-2">
-                <BsArrowRepeat style={{ color: "#059669", fontSize: "15px" }} />
-                <span>30-Day Returns</span>
-              </div>
-              <div className="col-6 d-flex align-items-center gap-2">
-                <BsHeadset style={{ color: "#059669", fontSize: "15px" }} />
-                <span>Lifetime Support</span>
-              </div>
-            </div>
-          </div>
-        </div>
+              {VALUE_PROPS.map(({ icon: Icon, label }) => (
+                <Col
+                  key={label}
+                  xs={6}
+                  className="d-flex align-items-center gap-2"
+                >
+                  <Icon style={{ color: "#059669", fontSize: "15px" }} />
+                  <span>{label}</span>
+                </Col>
+              ))}
+            </Row>
+          </Col>
+        </Row>
 
         {/* Tab Navigation */}
-        <div className="border-bottom mb-4" style={{ borderColor: "#e2e8f0" }}>
-          <div className="d-flex align-items-center gap-4">
-            {["specifications", "user reviews", "q&a", "downloads"].map(
-              (tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  className="btn btn-link text-decoration-none px-0 py-2 position-relative text-capitalize fw-semibold"
-                  style={{
-                    color: activeTab === tab ? "#4338ca" : "#64748b",
-                    fontSize: "14px",
-                    borderBottom:
-                      activeTab === tab ? "2px solid #4338ca" : "none",
-                  }}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab === "q&a" ? "Q&A" : tab}
-                </button>
-              ),
-            )}
-          </div>
-        </div>
+        <Nav
+          activeKey={activeTab}
+          onSelect={(key) => setActiveTab(key)}
+          className="border-bottom mb-4 gap-4"
+          style={{ borderColor: "#e2e8f0" }}
+        >
+          {TABS.map((tab) => (
+            <Nav.Item key={tab.key}>
+              <Nav.Link
+                eventKey={tab.key}
+                className="px-0 py-2 text-capitalize fw-semibold"
+                style={{
+                  color: activeTab === tab.key ? "#4338ca" : "#64748b",
+                  fontSize: "14px",
+                  borderBottom:
+                    activeTab === tab.key ? "2px solid #4338ca" : "none",
+                }}
+              >
+                {tab.label}
+              </Nav.Link>
+            </Nav.Item>
+          ))}
+        </Nav>
 
         {/* Tab Cards: Audio Specs, Physical, In the Box */}
-        <div className="row g-4 mb-5">
-          {/* Audio Specs */}
-          <div className="col-12 col-md-4">
-            <div
-              className="card p-4 border h-100 shadow-sm"
-              style={{
-                borderRadius: "16px",
-                borderColor: "#e2e8f0",
-                backgroundColor: "#f8fafc",
-              }}
-            >
-              <h5
-                className="fw-bold text-dark mb-4"
-                style={{ fontSize: "16px" }}
-              >
-                Audio Specs
-              </h5>
-              <div className="d-flex flex-column gap-3 small">
-                <div className="d-flex justify-content-between">
-                  <span className="text-secondary">Driver Diameter</span>
-                  <span className="fw-semibold text-dark">50mm Neodymium</span>
+        <Row className="g-4 mb-5">
+          {/* Audio Specs and Physical Specs */}
+          {[
+            { title: "Audio Specs", specs: AUDIO_SPECS },
+            { title: "Physical", specs: PHYSICAL_SPECS },
+          ].map((group) => (
+            <Col key={group.title} xs={12} md={4}>
+              <Card className="p-4 h-100 shadow-sm" style={specCardStyle}>
+                <h5
+                  className="fw-bold text-dark mb-4"
+                  style={{ fontSize: "16px" }}
+                >
+                  {group.title}
+                </h5>
+                <div className="d-flex flex-column gap-3 small">
+                  {group.specs.map(([label, value]) => (
+                    <div key={label} className="d-flex justify-content-between">
+                      <span className="text-secondary">{label}</span>
+                      <span className="fw-semibold text-dark">{value}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="d-flex justify-content-between">
-                  <span className="text-secondary">Freq. Response</span>
-                  <span className="fw-semibold text-dark">5Hz - 40kHz</span>
-                </div>
-                <div className="d-flex justify-content-between">
-                  <span className="text-secondary">Impedance</span>
-                  <span className="fw-semibold text-dark">32 Ohms</span>
-                </div>
-                <div className="d-flex justify-content-between">
-                  <span className="text-secondary">Sensitivity</span>
-                  <span className="fw-semibold text-dark">102 dB/mW</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Physical Specs */}
-          <div className="col-12 col-md-4">
-            <div
-              className="card p-4 border h-100 shadow-sm"
-              style={{
-                borderRadius: "16px",
-                borderColor: "#e2e8f0",
-                backgroundColor: "#f8fafc",
-              }}
-            >
-              <h5
-                className="fw-bold text-dark mb-4"
-                style={{ fontSize: "16px" }}
-              >
-                Physical
-              </h5>
-              <div className="d-flex flex-column gap-3 small">
-                <div className="d-flex justify-content-between">
-                  <span className="text-secondary">Weight</span>
-                  <span className="fw-semibold text-dark">285g (9.8 oz)</span>
-                </div>
-                <div className="d-flex justify-content-between">
-                  <span className="text-secondary">Cable Type</span>
-                  <span className="fw-semibold text-dark">
-                    Detachable Coiled
-                  </span>
-                </div>
-                <div className="d-flex justify-content-between">
-                  <span className="text-secondary">Earcup Material</span>
-                  <span className="fw-semibold text-dark">Memory Foam</span>
-                </div>
-                <div className="d-flex justify-content-between">
-                  <span className="text-secondary">Folding</span>
-                  <span className="fw-semibold text-dark">
-                    Flat-fold design
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+              </Card>
+            </Col>
+          ))}
 
           {/* In the Box */}
-          <div className="col-12 col-md-4">
-            <div
-              className="card p-4 border h-100 shadow-sm"
-              style={{
-                borderRadius: "16px",
-                borderColor: "#e2e8f0",
-                backgroundColor: "#f8fafc",
-              }}
-            >
+          <Col xs={12} md={4}>
+            <Card className="p-4 h-100 shadow-sm" style={specCardStyle}>
               <h5
                 className="fw-bold text-dark mb-2"
                 style={{ fontSize: "16px" }}
@@ -553,12 +543,7 @@ const ProductDetailsPage = () => {
               </p>
 
               <div className="d-flex flex-wrap gap-2 mb-3">
-                {[
-                  "Hard Case",
-                  "3.5mm Cable",
-                  "6.3mm Adapter",
-                  "Extra Pads",
-                ].map((item) => (
+                {BOX_ITEMS.map((item) => (
                   <span
                     key={item}
                     className="badge border text-dark fw-normal px-2 py-1"
@@ -581,9 +566,9 @@ const ProductDetailsPage = () => {
                   style={{ width: "100px", height: "80px", objectFit: "cover" }}
                 />
               </div>
-            </div>
-          </div>
-        </div>
+            </Card>
+          </Col>
+        </Row>
 
         {/* Complete Your Setup Section */}
         <section className="mb-4">
@@ -610,11 +595,11 @@ const ProductDetailsPage = () => {
             </Link>
           </div>
 
-          <div className="row g-4">
+          <Row className="g-4">
             {crossSellProducts.map((p) => (
-              <div key={p.id} className="col-12 col-sm-6 col-lg-3">
-                <div
-                  className="card h-100 border bg-white p-3 shadow-sm"
+              <Col key={p.id} xs={12} sm={6} lg={3}>
+                <Card
+                  className="h-100 bg-white p-3 shadow-sm"
                   style={{ borderRadius: "16px", borderColor: "#e2e8f0" }}
                 >
                   <div
@@ -658,27 +643,31 @@ const ProductDetailsPage = () => {
                     >
                       {p.price}
                     </span>
-                    <button
+                    <Button
                       type="button"
-                      className="btn d-flex align-items-center justify-content-center border"
+                      variant="light"
+                      aria-label={`Add ${p.title} to cart`}
+                      className="d-flex align-items-center justify-content-center p-0"
                       style={{
+                        "--bs-btn-bg": "#e0e7ff",
+                        "--bs-btn-color": "#4338ca",
+                        "--bs-btn-border-color": "#c7d2fe",
+                        "--bs-btn-hover-bg": "#c7d2fe",
+                        "--bs-btn-hover-color": "#4338ca",
                         width: "34px",
                         height: "34px",
                         borderRadius: "8px",
-                        backgroundColor: "#e0e7ff",
-                        borderColor: "#c7d2fe",
-                        color: "#4338ca",
                       }}
                     >
                       <BsCartPlus style={{ fontSize: "16px" }} />
-                    </button>
+                    </Button>
                   </div>
-                </div>
-              </div>
+                </Card>
+              </Col>
             ))}
-          </div>
+          </Row>
         </section>
-      </div>
+      </Container>
     </div>
   );
 };
