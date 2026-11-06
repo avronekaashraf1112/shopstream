@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Nav, Button } from "react-bootstrap";
+import { Nav, Button, Offcanvas } from "react-bootstrap";
 import {
   BsGrid,
   BsBoxSeam,
@@ -8,6 +9,7 @@ import {
   BsPeople,
   BsShieldLock,
   BsBoxArrowRight,
+  BsList,
 } from "react-icons/bs";
 import { logout } from "../../redux/authSlice";
 
@@ -50,47 +52,44 @@ const AdminSidebar = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
+  const [showMenu, setShowMenu] = useState(false); // Menu on small screens
+
   const isItemActive = (item) =>
     item.match.some((part) => location.pathname.includes(part));
 
   const handleLogout = () => {
+    setShowMenu(false);
     dispatch(logout());
     navigate("/login");
   };
 
-  return (
-    <aside
-      className="d-flex flex-column justify-content-between p-3 border-end"
-      style={{
-        width: "260px",
-        minWidth: "260px",
-        minHeight: "100vh",
-        backgroundColor: "#eef2ff",
-        borderColor: "#e2e8f0",
-      }}
-    >
+  // The content of the menu: used in the sidebar (large screens) and in the offcanvas (small screens)
+  const renderMenu = (showBrand) => (
+    <>
       <div>
         {/* Brand */}
-        <div className="px-3 pt-3 pb-4">
-          <Link to="/admin/dashboard" className="text-decoration-none">
-            <h4
-              className="fw-bold mb-0"
-              style={{
-                color: "#4338ca",
-                fontSize: "24px",
-                letterSpacing: "-0.5px",
-              }}
-            >
-              ShopStream
-            </h4>
-            <div
-              className="text-muted fw-semibold"
-              style={{ fontSize: "12px", letterSpacing: "0.2px" }}
-            >
-              Admin Panel
-            </div>
-          </Link>
-        </div>
+        {showBrand && (
+          <div className="px-3 pt-3 pb-4">
+            <Link to="/admin/dashboard" className="text-decoration-none">
+              <h4
+                className="fw-bold mb-0"
+                style={{
+                  color: "#4338ca",
+                  fontSize: "24px",
+                  letterSpacing: "-0.5px",
+                }}
+              >
+                ShopStream
+              </h4>
+              <div
+                className="text-muted fw-semibold"
+                style={{ fontSize: "12px", letterSpacing: "0.2px" }}
+              >
+                Admin Panel
+              </div>
+            </Link>
+          </div>
+        )}
 
         {/* Navigation links */}
         <Nav className="flex-column gap-2 px-2">
@@ -101,6 +100,7 @@ const AdminSidebar = () => {
                 as={Link}
                 key={item.name}
                 to={item.path}
+                onClick={() => setShowMenu(false)}
                 className="d-flex align-items-center gap-3 px-3 py-2"
                 style={{
                   borderRadius: "10px",
@@ -174,7 +174,88 @@ const AdminSidebar = () => {
           <BsBoxArrowRight style={{ fontSize: "18px" }} />
         </Button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Top bar with a menu button (small screens only) */}
+      <div
+        className="d-flex d-lg-none align-items-center justify-content-between px-3 py-2 border-bottom"
+        style={{ backgroundColor: "#eef2ff", borderColor: "#e2e8f0" }}
+      >
+        <Link to="/admin/dashboard" className="text-decoration-none">
+          <span
+            className="fw-bold"
+            style={{
+              color: "#4338ca",
+              fontSize: "20px",
+              letterSpacing: "-0.5px",
+            }}
+          >
+            ShopStream
+          </span>
+          <span
+            className="text-muted fw-semibold ms-2"
+            style={{ fontSize: "12px" }}
+          >
+            Admin
+          </span>
+        </Link>
+
+        <Button
+          variant="light"
+          aria-label="Open menu"
+          onClick={() => setShowMenu(true)}
+          className="d-flex align-items-center justify-content-center p-0"
+          style={{
+            "--bs-btn-bg": "#ffffff",
+            "--bs-btn-color": "#4338ca",
+            "--bs-btn-border-color": "#c7d2fe",
+            width: "40px",
+            height: "40px",
+            borderRadius: "10px",
+          }}
+        >
+          <BsList style={{ fontSize: "22px" }} />
+        </Button>
+      </div>
+
+      {/* Sidebar (large screens only) */}
+      <aside
+        className="d-none d-lg-flex flex-column justify-content-between p-3 border-end"
+        style={{
+          width: "260px",
+          minWidth: "260px",
+          minHeight: "100vh",
+          backgroundColor: "#eef2ff",
+          borderColor: "#e2e8f0",
+        }}
+      >
+        {renderMenu(true)}
+      </aside>
+
+      {/* Menu that slides in (small screens only) */}
+      <Offcanvas
+        show={showMenu}
+        onHide={() => setShowMenu(false)}
+        placement="start"
+        className="d-lg-none"
+        style={{ width: "280px", backgroundColor: "#eef2ff" }}
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title
+            className="fw-bold"
+            style={{ color: "#4338ca", letterSpacing: "-0.5px" }}
+          >
+            ShopStream
+          </Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body className="d-flex flex-column justify-content-between">
+          {renderMenu(false)}
+        </Offcanvas.Body>
+      </Offcanvas>
+    </>
   );
 };
 
