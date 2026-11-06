@@ -76,3 +76,4 @@ The app is deployed on Vercel. The included `vercel.json` rewrites all routes to
 
 - DummyJSON simulates write operations: adding, updating or deleting products, users and carts returns a success response but does not save anything on the server. The UI updates its local state to reflect these actions, and the changes are lost on reload.
 - Registration is a mock flow for the same reason: the new user is not stored by the API, so you cannot log in with it.
+- User and cart details are shown inside the edit dialogs in the dashboard, following the Figma design.
